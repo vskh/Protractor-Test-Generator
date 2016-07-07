@@ -1,0 +1,28 @@
+<div class="panel panel-primary">
+	<!-- Default panel contents -->
+	<div class="panel-heading">
+		<a data-toggle="collapse" data-target="#pref" href='' style="color:white;">Preferences</a>
+	</div>
+	<div id="pref" class="panel-collapse collapse">
+		<!-- List group -->
+		<ul class="list-group">
+			<li class="list-group-item">
+				<p><strong>Workspace for extension</strong></p>
+				<div class="col-lg-6">
+					<p><input type="radio" name="workspace" ng-model="partial" value="false"/><span> Entire page</span></p>
+					<p><input type="radio" name="workspace" ng-model="partial" value="true"/><span> Partial page</span></p>
+					<input type="text" class="form-control" placeholder="Selector for the element" ng-show="partial === 'true'"/>
+				</div><!-- /.col-lg-6 -->
+			</li>
+			<li class="list-group-item">
+				<p><strong>Saving settings</strong></p>
+				<p><input type="radio" name="workspace" ng-model="save" value="all"/><span> Save all steps</span></p>
+				<!-- PAGE-LOAD / CLICKS / TEXT INPUT -->
+			</li>
+		</ul>
+	</div>
+</div>
+<!-- -->
+<button type="button" class="btn btn-default" aria-label="Left Align" ng-click="Download();">
+	<span class="glyphicon glyphicon-save" aria-hidden="true"></span> Save the test file
+</button>

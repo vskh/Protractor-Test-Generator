@@ -1,0 +1,10 @@
+{
+	"compilerOptions":
+	{
+		"outFile": "../build/app.js"
+	},
+	"compileOnSave": true,
+	"files": [
+		"ts/app.ts"
+	]
+}
