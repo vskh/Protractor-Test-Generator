@@ -16,26 +16,16 @@
 		<div class="container" id="content-project" ng-controller="NavbarController">
 			<ul class="nav nav-tabs">
 				<li>
-					<a href="javascript:history.back()"><span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span></a>
+					<a href="" ng-click="Back();"><span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span></a>
 				</li>
-				<li ng-class="{active: isActive('/profile') || isActive('/graph')}">
-					<a href="#/profile"><span class="glyphicon glyphicon-record" aria-hidden="true" style="color:red;"></span>
-					{{(isActive('/profile') || isActive('/graph')) ? ' Profile' : ''}}
-					</a>
-				</li>
-				<li ng-class="{ active: isActive('/projects')}">
-					<a href="#/projects"><span class="glyphicon glyphicon-stop" aria-hidden="true"></span>
-					{{isActive('/projects') ? ' Projects' : ''}}
-					</a>
-				</li>
-				<li ng-class="{ active: isActive('/replay')}">
-					<a href="#/replay"><span class="glyphicon glyphicon-play" aria-hidden="true"></span>
-					{{isActive('/replay') ? ' Replay' : ''}}
+				<li ng-class="{ active: isActive('/tests')}">
+					<a href="#/"><span class="glyphicon glyphicon-tasks" aria-hidden="true"></span>
+					{{ isActive('/tests') ? 'Tests' : ''}}
 					</a>
 				</li>
 				<li ng-class="{ active: isActive('/preferences')}">
 					<a href="#/preferences"><span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
-					{{isActive('/preferences') ? ' Preferences' : ''}}
+					{{ isActive('/preferences') ? ' Preferences' : ''}}
 					</a>
 				</li>
 			</ul>

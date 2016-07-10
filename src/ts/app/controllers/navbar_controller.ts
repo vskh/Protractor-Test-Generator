@@ -5,6 +5,9 @@ module ExtensionApp.Controllers
 	{
 		/** Variables */
 		isActive: any;
+
+		/** Methods */
+		Back: any;
 	}
 	export class NavbarController
 	{
@@ -24,6 +27,11 @@ module ExtensionApp.Controllers
 				}
 				return $location.path().indexOf(viewLocation) >= 0;
 			};
+
+			$scope.Back = () =>
+			{
+				window.history.back();
+			}
 		}
 	}
 }

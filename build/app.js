@@ -347,6 +347,9 @@ var ExtensionApp;
                     }
                     return $location.path().indexOf(viewLocation) >= 0;
                 };
+                $scope.Back = function () {
+                    window.history.back();
+                };
             }
             /** dependency injection */
             NavbarController.$inject = ['$scope', '$location'];
@@ -399,8 +402,8 @@ var ExtensionApp;
 (function (ExtensionApp) {
     angular.module('ExtensionApp', ['ngRoute', 'ExtensionApp.Controllers', 'ExtensionApp.Services', 'ui.bootstrap.contextMenu']).config(['$routeProvider',
         function ($routeProvider) {
-            $routeProvider.when('/', {
-                templateUrl: 'build/views/intro.html',
+            $routeProvider.when('/tests', {
+                templateUrl: 'build/views/tests.html',
                 controller: ExtensionApp.Controllers.EventsController
             })
                 .when('/preferences', {
@@ -408,7 +411,7 @@ var ExtensionApp;
                 controller: ExtensionApp.Controllers.PreferencesController
             }).
                 otherwise({
-                redirectTo: '/'
+                redirectTo: '/tests'
             });
         }]).run(function () {
         console.log('running the app');
