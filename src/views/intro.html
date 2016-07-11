@@ -1,3 +1,8 @@
-<span>To start recording please refresh the website that you want to verify</span>
-<span ng-if="initialized">Your tests will be conducted against the tab {{tab}} and begin with url
-	{{url}} </span>
+<div class="bs-callout bs-callout-danger" ng-if="!initialized">
+	<h4>Initialize the test page</h4>
+	<p>We will start tracking the events once you refresh the page you want to test. You can re-initialize again, but your data will be lost.</p>
+</div>
+<div class="bs-callout bs-callout-success" ng-if="initialized">
+	<h4>Test page initialized!</h4>
+	<p>We will be recording the events in tab: <b>'{{tab}}'</b> with url: <i>'{{url}}'</i>.</p>
+</div>

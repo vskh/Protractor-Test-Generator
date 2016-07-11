@@ -14,6 +14,18 @@ body {
 .bs-callout-info {
 	border-left-color: #1b809e;
 }
+.bs-callout-danger {
+	border-left-color: #ce4844;
+}
+.bs-callout-success {
+	border-left-color: #3c763d;
+}
+.bs-callout-success h4 {
+	color: #3c763d;
+}
+.bs-callout-danger h4 {
+	color: #ce4844
+}
 .setup
 {
 	background-color: yellow;

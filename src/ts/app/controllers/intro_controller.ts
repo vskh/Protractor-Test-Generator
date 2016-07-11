@@ -28,11 +28,10 @@ module ExtensionApp.Controllers
 		 */
 		constructor(private $scope: IntroScope, private ChromeService: Services.ChromeService, private chrome: any)
 		{
-			/*if (!ChromeService.initialized)
-			{*/
+			if (!ChromeService.isInitialized)
+			{
 				this.InitializeEventHandlers();
-				//ChromeService.initialized = true;
-		//	}
+			}
 		}
 
 		/**

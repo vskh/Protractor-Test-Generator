@@ -46,6 +46,7 @@ module ExtensionApp.Services
 			this.isInitialized = true;
 		}
 
+		/** Initialize the event listeners. */
 		public InitializeEventListeners()
 		{
 			var CS = this;
