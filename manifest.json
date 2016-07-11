@@ -1,7 +1,7 @@
 {
 	"manifest_version": 2,
 
-	"name": "StepSaver",
+	"name": "Protractor-Test-Generator",
 	"description": "Record your clicks and inputs and replay them.",
 	"version": "1.0",
 	"background" : {
@@ -9,11 +9,11 @@
 		"persistent" : true
 	},
 	"icons": { "16": "icon16.png",
-           "48": "icon48.png",
-          "128": "icon128.png" },
+		"48": "icon48.png",
+		"128": "icon128.png" },
 	"browser_action": {
 		"default_icon": "icon.png",
-		"default_title" : "StepSaver"
+		"default_title" : "Protractor-Test-Generator"
 	},
 	"permissions": [
 		"activeTab",

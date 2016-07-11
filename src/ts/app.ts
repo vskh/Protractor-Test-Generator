@@ -10,7 +10,12 @@ module ExtensionApp
 	['ngRoute', 'ExtensionApp.Controllers', 'ExtensionApp.Services', 'ui.bootstrap.contextMenu']).config(['$routeProvider',
 		function($routeProvider)
 		{
-			$routeProvider.when('/tests',
+			$routeProvider.when('/',
+			{
+				templateUrl: 'build/views/intro.html',
+				controller: ExtensionApp.Controllers.IntroController
+			})
+			.when('/tests',
 			{
 				templateUrl: 'build/views/tests.html',
 				controller: ExtensionApp.Controllers.EventsController
@@ -21,7 +26,7 @@ module ExtensionApp
 				controller: ExtensionApp.Controllers.PreferencesController
 			}).
 			otherwise({
-				redirectTo: '/tests'
+				redirectTo: '/'
 			})
 		}]).run(() =>
 		{

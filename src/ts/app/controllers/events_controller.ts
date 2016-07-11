@@ -29,10 +29,10 @@ module ExtensionApp.Controllers
 		 */
 		constructor(private $scope: EventsScope, private ChromeService: Services.ChromeService, private chrome: any)
 		{
-			if (!ChromeService.initialized)
+			if (!ChromeService.isInitialized)
 			{
 				this.InitializeEventHandlers();
-				ChromeService.initialized = true;
+				ChromeService.isInitialized = true;
 			}
 			$scope.events = ChromeService.events;
 			$scope.menuOptions =

@@ -17,8 +17,13 @@ module ExtensionApp.Services
 		/** Compose file */
 		public ComposeFile()
 		{
-			var fileUrl: string = chrome.extension.getURL('template.js');
-			var fileContent: string = this.readTextFile(fileUrl);
+			var fileTemplateUrl: string = chrome.extension.getURL('file_template.js');
+
+			/** File template replacement tags */
+			var testName: string = '%NAME%';
+			var testTemplate: string = '%TESTTEMPLATE%';
+			var fileContent: string = this.readTextFile(fileTemplateUrl);
+
 			var formatted: string = this.formatString(fileContent, "testValue1", "testValue2");
 			chrome.downloads.download({
 				url: "data:text/plain," + formatted,

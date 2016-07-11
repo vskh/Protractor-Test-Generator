@@ -143,8 +143,16 @@ var ExtensionApp;
                 this.navigation = '';
                 /** Key queue */
                 this.keyQueue = [];
-                this.initialized = false;
+                this.isInitialized = false;
             }
+            /**
+             * Ensure that we're only looking to the same tab
+             * and registering events from that tab
+             */
+            ChromeService.prototype.Initialize = function (tabId) {
+                this.testingTabId = tabId;
+                this.isInitialized = true;
+            };
             /** Add event */
             ChromeService.prototype.AddEvent = function (event) {
                 this.events.push(event);
@@ -190,8 +198,11 @@ var ExtensionApp;
             }
             /** Compose file */
             TemplateService.prototype.ComposeFile = function () {
-                var fileUrl = chrome.extension.getURL('template.js');
-                var fileContent = this.readTextFile(fileUrl);
+                var fileTemplateUrl = chrome.extension.getURL('file_template.js');
+                /** File template replacement tags */
+                var testName = '%NAME%';
+                var testTemplate = '%TESTTEMPLATE%';
+                var fileContent = this.readTextFile(fileTemplateUrl);
                 var formatted = this.formatString(fileContent, "testValue1", "testValue2");
                 chrome.downloads.download({
                     url: "data:text/plain," + formatted,
@@ -249,6 +260,60 @@ var ExtensionApp;
         angular.module('ExtensionApp.Services').service('TemplateService', Services.TemplateService);
     })(Services = ExtensionApp.Services || (ExtensionApp.Services = {}));
 })(ExtensionApp || (ExtensionApp = {}));
+var ExtensionApp;
+(function (ExtensionApp) {
+    var Controllers;
+    (function (Controllers) {
+        var IntroController = (function () {
+            /**
+             * Constructor for events controller.
+             * @param $scope the scope
+             * @param ChromeService chrome service
+             */
+            function IntroController($scope, ChromeService, chrome) {
+                this.$scope = $scope;
+                this.ChromeService = ChromeService;
+                this.chrome = chrome;
+                /*if (!ChromeService.initialized)
+                {*/
+                this.InitializeEventHandlers();
+                //ChromeService.initialized = true;
+                //	}
+            }
+            /**
+             * Initialize event handlers
+             */
+            IntroController.prototype.InitializeEventHandlers = function () {
+                var _ChromeService = this.ChromeService;
+                var scope = this.$scope;
+                this.chrome.runtime.onMessage.addListener(function (msg, sender, response) {
+                    /** If the sender is content script */
+                    if (msg.from === 'content') {
+                        if (msg.subject) {
+                            /** Page load */
+                            if (msg.subject === 'load') {
+                                _ChromeService.Initialize(sender.tab.id);
+                                scope.tab = sender.tab.id;
+                                scope.url = msg.info.url;
+                                scope.initialized = true;
+                                _ChromeService.AddLoadEvent({ url: msg.info.url });
+                                scope.$apply();
+                            }
+                        }
+                    }
+                    /*scope.events = _ChromeService.events;
+                    scope.$apply();*/
+                });
+            };
+            /**
+             * Dependency injection.
+             */
+            IntroController.$inject = ['$scope', 'ChromeService', 'chrome'];
+            return IntroController;
+        })();
+        Controllers.IntroController = IntroController;
+    })(Controllers = ExtensionApp.Controllers || (ExtensionApp.Controllers = {}));
+})(ExtensionApp || (ExtensionApp = {}));
 /// <reference path="../../../../typings/chrome/chrome.d.ts"/>
 var ExtensionApp;
 (function (ExtensionApp) {
@@ -267,9 +332,9 @@ var ExtensionApp;
                 this.$scope = $scope;
                 this.ChromeService = ChromeService;
                 this.chrome = chrome;
-                if (!ChromeService.initialized) {
+                if (!ChromeService.isInitialized) {
                     this.InitializeEventHandlers();
-                    ChromeService.initialized = true;
+                    ChromeService.isInitialized = true;
                 }
                 $scope.events = ChromeService.events;
                 $scope.menuOptions =
@@ -380,6 +445,7 @@ var ExtensionApp;
         Controllers.PreferencesController = PreferencesController;
     })(Controllers = ExtensionApp.Controllers || (ExtensionApp.Controllers = {}));
 })(ExtensionApp || (ExtensionApp = {}));
+/// <reference path="intro_controller.ts"/>
 /// <reference path="events_controller.ts"/>
 /// <reference path="navbar_controller.ts"/>
 /// <reference path="preferences_controller.ts"/>
@@ -388,6 +454,7 @@ var ExtensionApp;
     var Controllers;
     (function (Controllers) {
         angular.module('ExtensionApp.Controllers', []);
+        angular.module('ExtensionApp.Controllers').controller('IntroController', Controllers.IntroController);
         angular.module('ExtensionApp.Controllers').controller('EventsController', Controllers.EventsController);
         angular.module('ExtensionApp.Controllers').controller('NavbarController', Controllers.NavbarController);
         angular.module('ExtensionApp.Controllers').controller('PreferencesController', Controllers.PreferencesController);
@@ -402,7 +469,11 @@ var ExtensionApp;
 (function (ExtensionApp) {
     angular.module('ExtensionApp', ['ngRoute', 'ExtensionApp.Controllers', 'ExtensionApp.Services', 'ui.bootstrap.contextMenu']).config(['$routeProvider',
         function ($routeProvider) {
-            $routeProvider.when('/tests', {
+            $routeProvider.when('/', {
+                templateUrl: 'build/views/intro.html',
+                controller: ExtensionApp.Controllers.IntroController
+            })
+                .when('/tests', {
                 templateUrl: 'build/views/tests.html',
                 controller: ExtensionApp.Controllers.EventsController
             })
@@ -411,7 +482,7 @@ var ExtensionApp;
                 controller: ExtensionApp.Controllers.PreferencesController
             }).
                 otherwise({
-                redirectTo: '/tests'
+                redirectTo: '/'
             });
         }]).run(function () {
         console.log('running the app');

@@ -15,10 +15,13 @@ module ExtensionApp.Services
 		public selection: string;
 
 		/** If the service is initialized */
-		public initialized: boolean;
+		public isInitialized: boolean;
 
 		/** Key queue */
 		public keyQueue: {id: string, text: string}[] = [];
+
+		/** Chrome tab id */
+		public testingTabId: any;
 
 		/** Dependency injection. */
 		static $inject = ['$timeout', 'chrome'];
@@ -30,7 +33,17 @@ module ExtensionApp.Services
 		 */
 		constructor(private timeout: ng.ITimeoutService, private chrome: any)
 		{
-			this.initialized = false;
+			this.isInitialized = false;
+		}
+
+		/**
+		 * Ensure that we're only looking to the same tab
+		 * and registering events from that tab
+		 */
+		public Initialize(tabId: number)
+		{
+			this.testingTabId = tabId;
+			this.isInitialized = true;
 		}
 
 		/** Add event */
