@@ -134,7 +134,8 @@ var ExtensionApp;
              * @param $scope Scope
              * @param chrome Chrome runtime
              */
-            function ChromeService(timeout, chrome) {
+            function ChromeService($rootScope, timeout, chrome) {
+                this.$rootScope = $rootScope;
                 this.timeout = timeout;
                 this.chrome = chrome;
                 /** Events array */
@@ -152,6 +153,37 @@ var ExtensionApp;
             ChromeService.prototype.Initialize = function (tabId) {
                 this.testingTabId = tabId;
                 this.isInitialized = true;
+            };
+            ChromeService.prototype.InitializeEventListeners = function () {
+                var CS = this;
+                var RS = this.$rootScope;
+                this.chrome.runtime.onMessage.addListener(function (msg, sender, response) {
+                    /** If the sender is content script and the tab is the one that we're tracking */
+                    if (msg.from === 'content' && sender.tab.id === CS.testingTabId) {
+                        if (msg.subject) {
+                            /** Page load */
+                            if (msg.subject === 'load') {
+                                CS.AddLoadEvent({ url: msg.info.url });
+                            }
+                            else if (msg.subject === 'click') {
+                                CS.AddClickEvent({ id: msg.info.id });
+                            }
+                            else if (msg.subject === 'focus') {
+                            }
+                            else if (msg.subject === 'keyup') {
+                                CS.AddKeyEvent({ id: msg.info.id, text: msg.info.text });
+                            }
+                        }
+                    }
+                    else if (msg.from === 'background') {
+                        /**  */
+                        if (msg.subject) {
+                            if (msg.subject === 'UrlChange') {
+                            }
+                        }
+                    }
+                    RS.$apply();
+                });
             };
             /** Add event */
             ChromeService.prototype.AddEvent = function (event) {
@@ -177,7 +209,7 @@ var ExtensionApp;
                 }
             };
             /** Dependency injection. */
-            ChromeService.$inject = ['$timeout', 'chrome'];
+            ChromeService.$inject = ['$rootScope', '$timeout', 'chrome'];
             return ChromeService;
         })();
         Services.ChromeService = ChromeService;
@@ -297,6 +329,7 @@ var ExtensionApp;
                                 scope.url = msg.info.url;
                                 scope.initialized = true;
                                 _ChromeService.AddLoadEvent({ url: msg.info.url });
+                                _ChromeService.InitializeEventListeners();
                                 scope.$apply();
                             }
                         }
@@ -332,10 +365,6 @@ var ExtensionApp;
                 this.$scope = $scope;
                 this.ChromeService = ChromeService;
                 this.chrome = chrome;
-                if (!ChromeService.isInitialized) {
-                    this.InitializeEventHandlers();
-                    ChromeService.isInitialized = true;
-                }
                 $scope.events = ChromeService.events;
                 $scope.menuOptions =
                     [
@@ -350,42 +379,6 @@ var ExtensionApp;
                             }]
                     ];
             }
-            /**
-             * Initialize event handlers
-             */
-            EventsController.prototype.InitializeEventHandlers = function () {
-                var _ChromeService = this.ChromeService;
-                var scope = this.$scope;
-                this.chrome.runtime.onMessage.addListener(function (msg, sender, response) {
-                    /** If the sender is content script */
-                    if (msg.from === 'content') {
-                        if (msg.subject) {
-                            /** Page load */
-                            if (msg.subject === 'load') {
-                                _ChromeService.AddLoadEvent({ url: msg.info.url });
-                            }
-                            else if (msg.subject === 'click') {
-                                _ChromeService.AddClickEvent({ id: msg.info.id });
-                            }
-                            else if (msg.subject === 'focus') {
-                            }
-                            else if (msg.subject === 'keyup') {
-                                _ChromeService.AddKeyEvent({ id: msg.info.id, text: msg.info.text });
-                            }
-                        }
-                    }
-                    else if (msg.from === 'background') {
-                        /**  */
-                        if (msg.subject) {
-                            if (msg.subject === 'UrlChange') {
-                            }
-                        }
-                    }
-                    //_ChromeService.AddEvent({class: msg.info.class, id: msg.info.id, type: msg.subject});
-                    scope.events = _ChromeService.events;
-                    scope.$apply();
-                });
-            };
             /**
              * Dependency injection.
              */
@@ -469,7 +462,7 @@ var ExtensionApp;
 (function (ExtensionApp) {
     angular.module('ExtensionApp', ['ngRoute', 'ExtensionApp.Controllers', 'ExtensionApp.Services', 'ui.bootstrap.contextMenu']).config(['$routeProvider',
         function ($routeProvider) {
-            $routeProvider.when('/', {
+            $routeProvider.when('/setup', {
                 templateUrl: 'build/views/intro.html',
                 controller: ExtensionApp.Controllers.IntroController
             })
@@ -482,7 +475,7 @@ var ExtensionApp;
                 controller: ExtensionApp.Controllers.PreferencesController
             }).
                 otherwise({
-                redirectTo: '/'
+                redirectTo: '/setup'
             });
         }]).run(function () {
         console.log('running the app');

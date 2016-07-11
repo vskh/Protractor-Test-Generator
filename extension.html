@@ -18,14 +18,14 @@
 				<li>
 					<a href="" ng-click="Back();"><span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span></a>
 				</li>
-				<li ng-class="{ active: isActive('/tests')}">
-					<a href="#/"><span class="glyphicon glyphicon-tasks" aria-hidden="true"></span>
-					{{ isActive('/tests') ? 'Tests' : ''}}
+				<li ng-class="{ active: isActive('/setup')}">
+					<a href="#/settings"><span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
+					{{ isActive('/setup') ? ' Setup' : ''}}
 					</a>
 				</li>
-				<li ng-class="{ active: isActive('/preferences')}">
-					<a href="#/preferences"><span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
-					{{ isActive('/preferences') ? ' Preferences' : ''}}
+				<li ng-class="{ active: isActive('/tests')}">
+					<a href="#/tests"><span class="glyphicon glyphicon-tasks" aria-hidden="true"></span>
+					{{ isActive('/tests') ? 'Tests' : ''}}
 					</a>
 				</li>
 			</ul>

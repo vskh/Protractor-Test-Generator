@@ -57,6 +57,7 @@ module ExtensionApp.Controllers
 							scope.url = msg.info.url;
 							scope.initialized = true;
 							_ChromeService.AddLoadEvent({url: msg.info.url});
+							_ChromeService.InitializeEventListeners();
 							scope.$apply();
 						}
 					}

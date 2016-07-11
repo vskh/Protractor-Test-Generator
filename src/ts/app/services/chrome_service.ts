@@ -24,14 +24,14 @@ module ExtensionApp.Services
 		public testingTabId: any;
 
 		/** Dependency injection. */
-		static $inject = ['$timeout', 'chrome'];
+		static $inject = ['$rootScope', '$timeout', 'chrome'];
 
 		/**
 		 * Constructor for the chrome service.
 		 * @param $scope Scope
 		 * @param chrome Chrome runtime
 		 */
-		constructor(private timeout: ng.ITimeoutService, private chrome: any)
+		constructor(private $rootScope: ng.IRootScopeService, private timeout: ng.ITimeoutService, private chrome: any)
 		{
 			this.isInitialized = false;
 		}
@@ -44,6 +44,53 @@ module ExtensionApp.Services
 		{
 			this.testingTabId = tabId;
 			this.isInitialized = true;
+		}
+
+		public InitializeEventListeners()
+		{
+			var CS = this;
+			var RS = this.$rootScope;
+			this.chrome.runtime.onMessage.addListener(function (msg, sender, response) {
+				
+				/** If the sender is content script and the tab is the one that we're tracking */
+				if (msg.from === 'content' && sender.tab.id === CS.testingTabId)
+				{
+					if (msg.subject)
+					{
+						/** Page load */
+						if (msg.subject === 'load')
+						{
+							CS.AddLoadEvent({url: msg.info.url});
+						}
+						/** Click event */
+						else if (msg.subject === 'click')
+						{
+							CS.AddClickEvent({id: msg.info.id});
+						}
+						/** Focus event */
+						else if (msg.subject === 'focus')
+						{
+						}
+						/** Key up event */
+						else if (msg.subject === 'keyup')
+						{
+							CS.AddKeyEvent({id: msg.info.id, text: msg.info.text});
+						}
+					}
+				}
+				else if (msg.from === 'background')
+				{
+					/**  */
+					if (msg.subject)
+					{
+						if (msg.subject === 'UrlChange')
+						{
+							//_ChromeService.AddEvent()
+						}
+					}
+				}
+				RS.$apply();
+			});
 		}
 
 		/** Add event */
