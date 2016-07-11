@@ -11,4 +11,6 @@ gulp.task('build', function(){
 		.pipe(gulp.dest('./build/images/'));
 	gulp.src('./src/fonts/*')
 		.pipe(gulp.dest('./build/fonts/'));
+	gulp.src('./src/extension.html').pipe(gulp.dest('./build/'));
+	gulp.src('./src/manifest.json').pipe(gulp.dest('./build/'));
 });

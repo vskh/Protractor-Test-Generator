@@ -68,10 +68,6 @@ module ExtensionApp.Services
 						{
 							CS.AddClickEvent({id: msg.info.id});
 						}
-						/** Focus event */
-						else if (msg.subject === 'focus')
-						{
-						}
 						/** Key up event */
 						else if (msg.subject === 'text')
 						{

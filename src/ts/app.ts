@@ -12,17 +12,17 @@ module ExtensionApp
 		{
 			$routeProvider.when('/setup',
 			{
-				templateUrl: 'build/views/intro.html',
+				templateUrl: 'views/intro.html',
 				controller: ExtensionApp.Controllers.IntroController
 			})
 			.when('/tests',
 			{
-				templateUrl: 'build/views/tests.html',
+				templateUrl: 'views/tests.html',
 				controller: ExtensionApp.Controllers.EventsController
 			})
 			.when('/preferences',
 			{
-				templateUrl: 'build/views/preferences.html',
+				templateUrl: 'views/preferences.html',
 				controller: ExtensionApp.Controllers.PreferencesController
 			}).
 			otherwise({

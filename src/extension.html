@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html ng-app="ExtensionApp">
+	<head>
+		<script type="text/javascript" src="vendor/jquery-1.9.1.min.js"></script>
+		<script type="text/javascript" src="vendor/angular.min.js"></script>
+		<script type="text/javascript" src="vendor/angular-route.min.js"></script>
+		<script type="text/javascript" src="vendor/bootstrap.min.js"></script>
+		<script type="text/javascript" src="vendor/contextMenu.js"></script>
+		<script type="text/javascript" src="content.js"></script>
+		<script type="text/javascript" src="app.js"></script>
+		<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css"/>
+		<link rel="stylesheet" type="text/css" href="css/bootstrap-theme.min.css"/>
+		<link rel="stylesheet" type="text/css" href="css/style.css"/>
+	</head>
+	<body>
+		<div class="container" id="content-project" ng-controller="NavbarController">
+			<ul class="nav nav-tabs">
+				<li>
+					<a href="" ng-click="Back();"><span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span></a>
+				</li>
+				<li ng-class="{ active: isActive('/setup')}">
+					<a href="#/settings"><span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
+					{{ isActive('/setup') ? ' Setup' : ''}}
+					</a>
+				</li>
+				<li ng-class="{ active: isActive('/tests')}">
+					<a href="#/tests"><span class="glyphicon glyphicon-tasks" aria-hidden="true"></span>
+					{{ isActive('/tests') ? 'Tests' : ''}}
+					</a>
+				</li>
+			</ul>
+		</div>
+		<div class="container" ng-view>
+		</div>
+	</body>
+</html>

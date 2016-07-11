@@ -169,8 +169,6 @@ var ExtensionApp;
                             else if (msg.subject === 'click') {
                                 CS.AddClickEvent({ id: msg.info.id });
                             }
-                            else if (msg.subject === 'focus') {
-                            }
                             else if (msg.subject === 'text') {
                                 CS.AddKeyEvent({ id: msg.info.id, text: msg.info.text });
                             }
@@ -481,15 +479,15 @@ var ExtensionApp;
     angular.module('ExtensionApp', ['ngRoute', 'ExtensionApp.Controllers', 'ExtensionApp.Services', 'ui.bootstrap.contextMenu']).config(['$routeProvider',
         function ($routeProvider) {
             $routeProvider.when('/setup', {
-                templateUrl: 'build/views/intro.html',
+                templateUrl: 'views/intro.html',
                 controller: ExtensionApp.Controllers.IntroController
             })
                 .when('/tests', {
-                templateUrl: 'build/views/tests.html',
+                templateUrl: 'views/tests.html',
                 controller: ExtensionApp.Controllers.EventsController
             })
                 .when('/preferences', {
-                templateUrl: 'build/views/preferences.html',
+                templateUrl: 'views/preferences.html',
                 controller: ExtensionApp.Controllers.PreferencesController
             }).
                 otherwise({
