@@ -13,5 +13,9 @@
 			<span class="glyphicon glyphicon glyphicon glyphicon-globe" aria-hidden="true"></span>
 			<b>Loaded new url:</b> <em>'{{event.url}}'</em>
 		</div>
+		<div class="" ng-if="event.type === 'enter'" context-menu="menuOptions" style="word-wrap:break-word;">
+			<span class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span>
+			<b>Pressed enter on:</b> item with id <em>'{{event.id}}'</em>
+		</div>
 	</li>
 </ol>

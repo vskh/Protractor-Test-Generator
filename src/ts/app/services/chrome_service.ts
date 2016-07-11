@@ -73,9 +73,14 @@ module ExtensionApp.Services
 						{
 						}
 						/** Key up event */
-						else if (msg.subject === 'keyup')
+						else if (msg.subject === 'text')
 						{
 							CS.AddKeyEvent({id: msg.info.id, text: msg.info.text});
+						}
+						/** Enter event */
+						else if (msg.subject === 'enter')
+						{
+							CS.AddEnterEvent({id: msg.info.id});
 						}
 					}
 				}
@@ -125,6 +130,12 @@ module ExtensionApp.Services
 				this.events.pop();
 				this.events.push({id: event.id, text: event.text, type: 'key'});
 			}
+		}
+
+		/** Add Enter key event. */
+		public AddEnterEvent(event: any)
+		{
+			this.events.push({id: event.id, type: 'enter'});
 		}
 	}
 }

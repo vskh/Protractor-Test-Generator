@@ -37,14 +37,24 @@ document.addEventListener('focus', function (event) {
 }, true);
 
 document.addEventListener('keyup', function(event) {
-	console.log(event.key);
 	if (isExternalEvent(event))
 	{
-		chrome.runtime.sendMessage({
-			from: 'content',
-			subject: 'keyup',
-			info: {id: event.target.id, text: event.target.value}
-		});
+		if (event.key === 'Enter')
+		{
+			chrome.runtime.sendMessage({
+				from: 'content',
+				subject: 'enter',
+				info: {id: event.target.id}
+			});
+		}
+		else if (event.target.value)
+		{
+			chrome.runtime.sendMessage({
+				from: 'content',
+				subject: 'text',
+				info: {id: event.target.id, text: event.target.value}
+			});
+		}
 	}
 }, true);
 
