@@ -154,6 +154,7 @@ var ExtensionApp;
                 this.testingTabId = tabId;
                 this.isInitialized = true;
             };
+            /** Initialize the event listeners. */
             ChromeService.prototype.InitializeEventListeners = function () {
                 var CS = this;
                 var RS = this.$rootScope;
@@ -303,14 +304,29 @@ var ExtensionApp;
              * @param ChromeService chrome service
              */
             function IntroController($scope, ChromeService, chrome) {
+                var _this = this;
                 this.$scope = $scope;
                 this.ChromeService = ChromeService;
                 this.chrome = chrome;
-                /*if (!ChromeService.initialized)
-                {*/
-                this.InitializeEventHandlers();
-                //ChromeService.initialized = true;
-                //	}
+                /** If the chrome service is not initialized present the base page request experience. */
+                if (!ChromeService.isInitialized) {
+                    $scope.initialized = false;
+                    $scope.propose = false;
+                    this.InitializeEventHandlers();
+                }
+                else {
+                    $scope.initialized = true;
+                    $scope.tab = this.ChromeService.testingTabId;
+                    $scope.url = this.ChromeService.events[0].url;
+                }
+                /** Initialize everything now that we know the base page and tab id. */
+                $scope.Initialize = function () {
+                    $scope.initialized = true;
+                    $scope.propose = false;
+                    _this.ChromeService.Initialize($scope.tab);
+                    _this.ChromeService.AddLoadEvent({ url: $scope.url });
+                    _this.ChromeService.InitializeEventListeners();
+                };
             }
             /**
              * Initialize event handlers
@@ -324,18 +340,13 @@ var ExtensionApp;
                         if (msg.subject) {
                             /** Page load */
                             if (msg.subject === 'load') {
-                                _ChromeService.Initialize(sender.tab.id);
                                 scope.tab = sender.tab.id;
                                 scope.url = msg.info.url;
-                                scope.initialized = true;
-                                _ChromeService.AddLoadEvent({ url: msg.info.url });
-                                _ChromeService.InitializeEventListeners();
+                                scope.propose = true;
                                 scope.$apply();
                             }
                         }
                     }
-                    /*scope.events = _ChromeService.events;
-                    scope.$apply();*/
                 });
             };
             /**

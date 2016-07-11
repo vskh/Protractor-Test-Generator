@@ -5,13 +5,12 @@ module ExtensionApp.Controllers
 	 */
 	interface IntroScope extends ng.IScope
 	{
-		events: any;
-		navigation: string;
-		selection: string;
-		menuOptions: any;
 		tab: any;
 		url: string;
 		initialized: boolean;
+		propose: boolean;
+
+		Initialize: any;
 	}
 
 	export class IntroController
@@ -28,9 +27,29 @@ module ExtensionApp.Controllers
 		 */
 		constructor(private $scope: IntroScope, private ChromeService: Services.ChromeService, private chrome: any)
 		{
+			/** If the chrome service is not initialized present the base page request experience. */
 			if (!ChromeService.isInitialized)
 			{
+				$scope.initialized = false;
+				$scope.propose = false;
 				this.InitializeEventHandlers();
+			}
+			/** If the chrome service is initialized show the tab id and url to the user. */
+			else
+			{
+				$scope.initialized = true;
+				$scope.tab = this.ChromeService.testingTabId;
+				$scope.url = this.ChromeService.events[0].url;
+			}
+
+			/** Initialize everything now that we know the base page and tab id. */
+			$scope.Initialize = () =>
+			{
+				$scope.initialized = true;
+				$scope.propose = false;
+				this.ChromeService.Initialize($scope.tab);
+				this.ChromeService.AddLoadEvent({url: $scope.url});
+				this.ChromeService.InitializeEventListeners();
 			}
 		}
 
@@ -51,19 +70,13 @@ module ExtensionApp.Controllers
 						/** Page load */
 						if (msg.subject === 'load')
 						{
-							_ChromeService.Initialize(sender.tab.id);
 							scope.tab = sender.tab.id;
 							scope.url = msg.info.url;
-							scope.initialized = true;
-							_ChromeService.AddLoadEvent({url: msg.info.url});
-							_ChromeService.InitializeEventListeners();
+							scope.propose = true;
 							scope.$apply();
 						}
 					}
 				}
-
-				/*scope.events = _ChromeService.events;
-				scope.$apply();*/
 			});
 		}
 	}
