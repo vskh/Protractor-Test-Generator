@@ -1,7 +1,11 @@
+document.addEventListener('contextmenu', function(event){
+	chrome.runtime.sendMessage({
+		from: 'content',
+		subject: 'contextmenu',
+		info: {id: event.target.id}
+	});
+});
 document.addEventListener("mousedown", function (event) {
-	//right click
-	console.log(event);
-	console.log(event.target);
 	if (isExternalEvent(event))
 	{
 		chrome.runtime.sendMessage({

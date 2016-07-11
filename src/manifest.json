@@ -20,7 +20,8 @@
 		"contentSettings",
 		"https://ajax.googleapis.com/",
 		"downloads",
-		"webRequest"
+		"webRequest",
+		"contextMenus"
 	],
 	"content_scripts": [{
 		"matches": ["<all_urls>"],

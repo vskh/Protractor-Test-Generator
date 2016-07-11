@@ -8,6 +8,19 @@ chrome.browserAction.onClicked.addListener(function () {
         focused: true
     });
 });
+/** Context menu listening.. */
+chrome.runtime.onMessage.addListener(function (request, sender){
+    if (request.from === 'content' && request.subject === 'contextmenu')
+    {
+        chrome.contextMenus.create({
+            title: "Ensure existence of element with id: '" + request.info.id + "'", 
+            contexts:["all"], 
+            onclick: function(){
+                console.log('onclick');
+            },
+        });
+    }
+});
 
 /** make sure we're sending a message to chrome service via messaging api. */
 chrome.webRequest.onBeforeRequest.addListener(function(details){
@@ -18,8 +31,6 @@ chrome.webRequest.onBeforeRequest.addListener(function(details){
 			info: {'noinfo': 'noinfo'}
 		})
 }, {urls: [ "<all_urls>" ]});
-
-
 
 /*
 chrome.runtime.onMessage.addListener((msg, sender) => {
