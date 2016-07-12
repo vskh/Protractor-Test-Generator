@@ -485,10 +485,34 @@ var ExtensionApp;
         Controllers.PreferencesController = PreferencesController;
     })(Controllers = ExtensionApp.Controllers || (ExtensionApp.Controllers = {}));
 })(ExtensionApp || (ExtensionApp = {}));
+var ExtensionApp;
+(function (ExtensionApp) {
+    var Controllers;
+    (function (Controllers) {
+        /** Save controller */
+        var SaveController = (function () {
+            /**
+             * Constructor for save controller
+             * @param TemplateService Template Service for accessing templates and saving files.
+             */
+            function SaveController(TemplateService) {
+                this.TemplateService = TemplateService;
+            }
+            /**  */
+            SaveController.prototype.DownloadTestFile = function () {
+            };
+            /** Dependency injection */
+            SaveController.$inject = ['TemplateService'];
+            return SaveController;
+        })();
+        Controllers.SaveController = SaveController;
+    })(Controllers = ExtensionApp.Controllers || (ExtensionApp.Controllers = {}));
+})(ExtensionApp || (ExtensionApp = {}));
 /// <reference path="intro_controller.ts"/>
 /// <reference path="events_controller.ts"/>
 /// <reference path="navbar_controller.ts"/>
 /// <reference path="preferences_controller.ts"/>
+/// <reference path="save_controller.ts"/>
 var ExtensionApp;
 (function (ExtensionApp) {
     var Controllers;
@@ -498,6 +522,7 @@ var ExtensionApp;
         angular.module('ExtensionApp.Controllers').controller('EventsController', Controllers.EventsController);
         angular.module('ExtensionApp.Controllers').controller('NavbarController', Controllers.NavbarController);
         angular.module('ExtensionApp.Controllers').controller('PreferencesController', Controllers.PreferencesController);
+        angular.module('ExtensionApp.Controllers').controller('SaveController', Controllers.SaveController);
     })(Controllers = ExtensionApp.Controllers || (ExtensionApp.Controllers = {}));
 })(ExtensionApp || (ExtensionApp = {}));
 /// <reference path="../../typings/angularjs/angular.d.ts" />
@@ -522,6 +547,11 @@ var ExtensionApp;
                 .when('/preferences', {
                 templateUrl: 'views/preferences.html',
                 controller: ExtensionApp.Controllers.PreferencesController,
+                controllerAs: 'vm'
+            })
+                .when('/save', {
+                templateUrl: 'views/save.html',
+                controller: ExtensionApp.Controllers.SaveController,
                 controllerAs: 'vm'
             }).
                 otherwise({

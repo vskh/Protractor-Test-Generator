@@ -28,6 +28,11 @@
 					{{ isActive('/tests') ? 'Tests' : ''}}
 					</a>
 				</li>
+				<li ng-class="{ active: isActive('/save')}">
+					<a href="#/save"><span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span>
+					{{ isActive('/save') ? 'Save' : ''}}
+					</a>
+				</li>
 			</ul>
 		</div>
 		<div class="container" ng-view>
