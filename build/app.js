@@ -233,11 +233,12 @@ var ExtensionApp;
              */
             function TemplateService(chrome) {
                 this.chrome = chrome;
+                /** File name to be downloaded */
+                this.fileName = 'protractor.js';
             }
+            /** Initialize the file name to be something else */
             TemplateService.prototype.InitializeFileName = function (fileName) {
                 this.fileName = fileName;
-                var fileData = this.GetFileTemplate();
-                this.DownloadFile(fileName, fileData);
             };
             /** Get file template */
             TemplateService.prototype.GetFileTemplate = function () {
@@ -264,8 +265,8 @@ var ExtensionApp;
                 chrome.downloads.download({
                     url: "data:text/plain," + fileData,
                     filename: fileName,
-                    conflictAction: "uniquify",
-                    saveAs: false
+                    conflictAction: "prompt",
+                    saveAs: true
                 }, function (downloadId) {
                     console.log("Downloaded item with ID", downloadId);
                 });
@@ -374,16 +375,6 @@ var ExtensionApp;
                         }
                     }
                 });
-            };
-            /**
-             * Set file name and try downloading
-             */
-            IntroController.prototype.SetFileName = function () {
-                if (this.fileName && this.fileName.length > 0) {
-                    this.TemplateService.InitializeFileName(this.fileName);
-                    return;
-                }
-                this.TemplateService.InitializeFileName('protractor.js');
             };
             /**
              * Dependency injection.
@@ -498,7 +489,18 @@ var ExtensionApp;
             function SaveController(TemplateService) {
                 this.TemplateService = TemplateService;
             }
-            /**  */
+            /**
+             * Set file name and try downloading
+             */
+            SaveController.prototype.SetFileName = function () {
+                if (this.fileName && this.fileName.length > 0) {
+                    this.TemplateService.InitializeFileName(this.fileName);
+                    return;
+                }
+            };
+            /**
+             * Download the test file
+             */
             SaveController.prototype.DownloadTestFile = function () {
             };
             /** Dependency injection */

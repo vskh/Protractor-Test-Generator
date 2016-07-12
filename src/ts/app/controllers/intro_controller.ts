@@ -75,18 +75,5 @@ module ExtensionApp.Controllers
 				}
 			});
 		}
-
-		/**
-		 * Set file name and try downloading
-		 */
-		SetFileName()
-		{
-			if (this.fileName && this.fileName.length > 0)
-			{
-				this.TemplateService.InitializeFileName(this.fileName);
-				return;
-			}
-			this.TemplateService.InitializeFileName('protractor.js');
-		}
 	}
 }

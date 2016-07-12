@@ -3,16 +3,16 @@ module ExtensionApp.Services
 	/** Template service */
 	export class TemplateService
 	{
+		/** File name to be downloaded */
+		private fileName: string = 'protractor.js';
+
 		/** Dependency injection */
 		static $inject: string[] = ['chrome', 'ChromeService'];
 
-		private fileName: string;
-
+		/** Initialize the file name to be something else */
 		InitializeFileName(fileName: string)
 		{
 			this.fileName = fileName;
-			var fileData = this.GetFileTemplate();
-			this.DownloadFile(fileName, fileData);
 		}
 
 		/**
@@ -53,8 +53,8 @@ module ExtensionApp.Services
 			chrome.downloads.download({
 				url: "data:text/plain," + fileData,
 				filename: fileName,
-				conflictAction: "uniquify", // or "overwrite" / "prompt"
-				saveAs: false, // true gives save-as dialogue
+				conflictAction: "prompt", // or "overwrite" / "prompt"
+				saveAs: true, // true gives save-as dialogue
 				}, function(downloadId) {
 					console.log("Downloaded item with ID", downloadId);
 			});
