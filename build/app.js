@@ -234,9 +234,14 @@ var ExtensionApp;
             function TemplateService(chrome) {
                 this.chrome = chrome;
             }
+            TemplateService.prototype.InitializeFileName = function (fileName) {
+                this.fileName = fileName;
+                var fileData = this.GetFileTemplate();
+                this.DownloadFile(fileName, fileData);
+            };
             /** Get file template */
             TemplateService.prototype.GetFileTemplate = function () {
-                var fileTemplateUrl = chrome.extension.getURL('file_template.js');
+                var fileTemplateUrl = chrome.extension.getURL('templates/file_template.js');
                 return this.readTextFile(fileTemplateUrl);
             };
             /** Compose file */
@@ -254,6 +259,16 @@ var ExtensionApp;
                     }, function(downloadId) {
                         console.log("Downloaded item with ID", downloadId);
                 });*/
+            };
+            TemplateService.prototype.DownloadFile = function (fileName, fileData) {
+                chrome.downloads.download({
+                    url: "data:text/plain," + fileData,
+                    filename: fileName,
+                    conflictAction: "uniquify",
+                    saveAs: false
+                }, function (downloadId) {
+                    console.log("Downloaded item with ID", downloadId);
+                });
             };
             /** Format string */
             TemplateService.prototype.formatString = function (format) {
@@ -312,9 +327,10 @@ var ExtensionApp;
              * @param $scope the scope
              * @param ChromeService chrome service
              */
-            function IntroController($scope, ChromeService, chrome) {
+            function IntroController($scope, ChromeService, TemplateService, chrome) {
                 this.$scope = $scope;
                 this.ChromeService = ChromeService;
+                this.TemplateService = TemplateService;
                 this.chrome = chrome;
                 /** If the chrome service is not initialized present the base page request experience. */
                 if (!ChromeService.isInitialized) {
@@ -328,7 +344,9 @@ var ExtensionApp;
                     this.url = this.ChromeService.events[0].url;
                 }
             }
-            /** Initialize everything now that we know the base page and tab id. */
+            /**
+             * Initialize everything now that we know the base page and tab id.
+             */
             IntroController.prototype.Initialize = function () {
                 this.initialized = true;
                 this.propose = false;
@@ -358,9 +376,19 @@ var ExtensionApp;
                 });
             };
             /**
+             * Set file name and try downloading
+             */
+            IntroController.prototype.SetFileName = function () {
+                if (this.fileName && this.fileName.length > 0) {
+                    this.TemplateService.InitializeFileName(this.fileName);
+                    return;
+                }
+                this.TemplateService.InitializeFileName('protractor.js');
+            };
+            /**
              * Dependency injection.
              */
-            IntroController.$inject = ['$scope', 'ChromeService', 'chrome'];
+            IntroController.$inject = ['$scope', 'ChromeService', 'TemplateService', 'chrome'];
             return IntroController;
         })();
         Controllers.IntroController = IntroController;

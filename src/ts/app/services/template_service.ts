@@ -11,6 +11,8 @@ module ExtensionApp.Services
 		InitializeFileName(fileName: string)
 		{
 			this.fileName = fileName;
+			var fileData = this.GetFileTemplate();
+			this.DownloadFile(fileName, fileData);
 		}
 
 		/**
@@ -23,7 +25,7 @@ module ExtensionApp.Services
 
 		/** Get file template */
 		private GetFileTemplate(): string {
-			var fileTemplateUrl: string = chrome.extension.getURL('file_template.js');
+			var fileTemplateUrl: string = chrome.extension.getURL('templates/file_template.js');
 			return this.readTextFile(fileTemplateUrl);
 		}
 
@@ -44,6 +46,18 @@ module ExtensionApp.Services
 				}, function(downloadId) {
 					console.log("Downloaded item with ID", downloadId);
 			});*/
+		}
+
+		public DownloadFile(fileName: string, fileData: string)
+		{
+			chrome.downloads.download({
+				url: "data:text/plain," + fileData,
+				filename: fileName,
+				conflictAction: "uniquify", // or "overwrite" / "prompt"
+				saveAs: false, // true gives save-as dialogue
+				}, function(downloadId) {
+					console.log("Downloaded item with ID", downloadId);
+			});
 		}
 
 		/** Format string */
