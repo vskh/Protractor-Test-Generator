@@ -1,18 +1,29 @@
-<div class="bs-callout bs-callout-danger" ng-if="!initialized">
+<div class="bs-callout bs-callout-danger" ng-if="!vm.initialized">
 	<h4>Initialize the test page</h4>
 	<p>We will start tracking the events once you refresh the page you want to test.
 		It will be the base for your protractor test cases so initialize carefully.
 		You can re-initialize again, but your data will be lost.
 	</p>
 </div>
-<div class="bs-callout bs-callout-info" ng-if="!initialized && propose">
+<div class="bs-callout bs-callout-info" ng-if="!vm.initialized && vm.propose">
 	<h4>Change detected!</h4>
-	<p>We detected you navigated to <i>'{{url}}'</i> in chrome tab with id: <b>'{{tab}}'</b>.</p>
+	<p>We detected you navigated to <i>'{{vm.url}}'</i> in chrome tab with id: <b>'{{vm.tab}}'</b>.</p>
 	<p>Do you want to make this the base test page? <b>If not we'll update here until you're at the page you want :) </b></p>
 
-	<button type="button" class="btn btn-success" ng-click="Initialize();">Yes - this is the page!</button>
+	<button type="button" class="btn btn-success" ng-click="vm.Initialize();">Yes - this is the page!</button>
 </div>
-<div class="bs-callout bs-callout-success" ng-if="initialized">
-	<h4>Test page initialized!</h4>
-	<p>We will be recording the events in tab: <b>'{{tab}}'</b> with url: <i>'{{url}}'</i>.</p>
+<div ng-if="vm.initialized">
+	<div class="bs-callout bs-callout-success">
+		<h4>Test page initialized!</h4>
+		<p>We will be recording the events in tab: <b>'{{vm.tab}}'</b> with url: <i>'{{vm.url}}'</i>.</p>
+	</div>
+	<div class="bs-callout bs-callout-info">
+		<p>We will be saving your file as {{vm.fileName}}.</p>
+		<div class="input-group">
+				<input ng-model="vm.fileName" type="text" class="form-control" placeholder="protractor.js">
+				<span class="input-group-btn">
+					<button class="btn btn-default" type="button" ng-click="vm.SetFileName();"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></button>
+				</span>
+		</div>
+	</div>
 </div>

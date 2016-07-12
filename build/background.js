@@ -9,6 +9,7 @@ chrome.browserAction.onClicked.addListener(function () {
     });
 });
 /** Context menu listening.. */
+/** This creates more than one menu item. Need to fix this. */
 chrome.runtime.onMessage.addListener(function (request, sender){
     if (request.from === 'content' && request.subject === 'contextmenu')
     {
@@ -31,11 +32,3 @@ chrome.webRequest.onBeforeRequest.addListener(function(details){
 			info: {'noinfo': 'noinfo'}
 		})
 }, {urls: [ "<all_urls>" ]});
-
-/*
-chrome.runtime.onMessage.addListener((msg, sender) => {
-    if ((msg.from === 'content') && (msg.subject === 'showPageAction')) {
-        // Enable the page-action for the requesting tab
-        chrome.pageAction.show(sender.tab.id);
-    }
-});*/ 

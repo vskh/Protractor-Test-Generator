@@ -4,7 +4,14 @@ module ExtensionApp.Services
 	export class TemplateService
 	{
 		/** Dependency injection */
-		static $inject: string[] = ['chrome'];
+		static $inject: string[] = ['chrome', 'ChromeService'];
+
+		private fileName: string;
+
+		InitializeFileName(fileName: string)
+		{
+			this.fileName = fileName;
+		}
 
 		/**
 		 * Constructor
@@ -14,25 +21,29 @@ module ExtensionApp.Services
 		{
 		}
 
+		/** Get file template */
+		private GetFileTemplate(): string {
+			var fileTemplateUrl: string = chrome.extension.getURL('file_template.js');
+			return this.readTextFile(fileTemplateUrl);
+		}
+
 		/** Compose file */
 		public ComposeFile()
 		{
-			var fileTemplateUrl: string = chrome.extension.getURL('file_template.js');
-
+			var fileTemplate = this.GetFileTemplate();
+			//fileTemplate.replace('%NAME%', )
 			/** File template replacement tags */
 			var testName: string = '%NAME%';
 			var testTemplate: string = '%TESTTEMPLATE%';
-			var fileContent: string = this.readTextFile(fileTemplateUrl);
 
-			var formatted: string = this.formatString(fileContent, "testValue1", "testValue2");
-			chrome.downloads.download({
+			/*chrome.downloads.download({
 				url: "data:text/plain," + formatted,
 				filename: "tests.js",
 				conflictAction: "uniquify", // or "overwrite" / "prompt"
 				saveAs: false, // true gives save-as dialogue
 				}, function(downloadId) {
 					console.log("Downloaded item with ID", downloadId);
-			});
+			});*/
 		}
 
 		/** Format string */

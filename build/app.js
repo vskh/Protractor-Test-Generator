@@ -234,22 +234,26 @@ var ExtensionApp;
             function TemplateService(chrome) {
                 this.chrome = chrome;
             }
+            /** Get file template */
+            TemplateService.prototype.GetFileTemplate = function () {
+                var fileTemplateUrl = chrome.extension.getURL('file_template.js');
+                return this.readTextFile(fileTemplateUrl);
+            };
             /** Compose file */
             TemplateService.prototype.ComposeFile = function () {
-                var fileTemplateUrl = chrome.extension.getURL('file_template.js');
+                var fileTemplate = this.GetFileTemplate();
+                //fileTemplate.replace('%NAME%', )
                 /** File template replacement tags */
                 var testName = '%NAME%';
                 var testTemplate = '%TESTTEMPLATE%';
-                var fileContent = this.readTextFile(fileTemplateUrl);
-                var formatted = this.formatString(fileContent, "testValue1", "testValue2");
-                chrome.downloads.download({
+                /*chrome.downloads.download({
                     url: "data:text/plain," + formatted,
                     filename: "tests.js",
-                    conflictAction: "uniquify",
-                    saveAs: false
-                }, function (downloadId) {
-                    console.log("Downloaded item with ID", downloadId);
-                });
+                    conflictAction: "uniquify", // or "overwrite" / "prompt"
+                    saveAs: false, // true gives save-as dialogue
+                    }, function(downloadId) {
+                        console.log("Downloaded item with ID", downloadId);
+                });*/
             };
             /** Format string */
             TemplateService.prototype.formatString = function (format) {
@@ -281,7 +285,7 @@ var ExtensionApp;
                 return allText;
             };
             /** Dependency injection */
-            TemplateService.$inject = ['chrome'];
+            TemplateService.$inject = ['chrome', 'ChromeService'];
             return TemplateService;
         })();
         Services.TemplateService = TemplateService;
@@ -309,46 +313,45 @@ var ExtensionApp;
              * @param ChromeService chrome service
              */
             function IntroController($scope, ChromeService, chrome) {
-                var _this = this;
                 this.$scope = $scope;
                 this.ChromeService = ChromeService;
                 this.chrome = chrome;
                 /** If the chrome service is not initialized present the base page request experience. */
                 if (!ChromeService.isInitialized) {
-                    $scope.initialized = false;
-                    $scope.propose = false;
+                    this.initialized = false;
+                    this.propose = false;
                     this.InitializeEventHandlers();
                 }
                 else {
-                    $scope.initialized = true;
-                    $scope.tab = this.ChromeService.testingTabId;
-                    $scope.url = this.ChromeService.events[0].url;
+                    this.initialized = true;
+                    this.tab = this.ChromeService.testingTabId;
+                    this.url = this.ChromeService.events[0].url;
                 }
-                /** Initialize everything now that we know the base page and tab id. */
-                $scope.Initialize = function () {
-                    $scope.initialized = true;
-                    $scope.propose = false;
-                    _this.ChromeService.Initialize($scope.tab);
-                    _this.ChromeService.AddLoadEvent({ url: $scope.url });
-                    _this.ChromeService.InitializeEventListeners();
-                };
             }
+            /** Initialize everything now that we know the base page and tab id. */
+            IntroController.prototype.Initialize = function () {
+                this.initialized = true;
+                this.propose = false;
+                this.ChromeService.Initialize(this.tab);
+                this.ChromeService.AddLoadEvent({ url: this.url });
+                this.ChromeService.InitializeEventListeners();
+            };
             /**
              * Initialize event handlers
              */
             IntroController.prototype.InitializeEventHandlers = function () {
                 var _ChromeService = this.ChromeService;
-                var scope = this.$scope;
+                var controller = this;
                 this.chrome.runtime.onMessage.addListener(function (msg, sender, response) {
                     /** If the sender is content script */
                     if (msg.from === 'content') {
                         if (msg.subject) {
                             /** Page load */
                             if (msg.subject === 'load') {
-                                scope.tab = sender.tab.id;
-                                scope.url = msg.info.url;
-                                scope.propose = true;
-                                scope.$apply();
+                                controller.tab = sender.tab.id;
+                                controller.url = msg.info.url;
+                                controller.propose = true;
+                                controller.$scope.$apply();
                             }
                         }
                     }
@@ -480,15 +483,18 @@ var ExtensionApp;
         function ($routeProvider) {
             $routeProvider.when('/setup', {
                 templateUrl: 'views/intro.html',
-                controller: ExtensionApp.Controllers.IntroController
+                controller: ExtensionApp.Controllers.IntroController,
+                controllerAs: 'vm'
             })
                 .when('/tests', {
                 templateUrl: 'views/tests.html',
-                controller: ExtensionApp.Controllers.EventsController
+                controller: ExtensionApp.Controllers.EventsController,
+                controllerAs: 'vm'
             })
                 .when('/preferences', {
                 templateUrl: 'views/preferences.html',
-                controller: ExtensionApp.Controllers.PreferencesController
+                controller: ExtensionApp.Controllers.PreferencesController,
+                controllerAs: 'vm'
             }).
                 otherwise({
                 redirectTo: '/setup'

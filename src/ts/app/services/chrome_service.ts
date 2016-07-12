@@ -52,7 +52,7 @@ module ExtensionApp.Services
 			var CS = this;
 			var RS = this.$rootScope;
 			this.chrome.runtime.onMessage.addListener(function (msg, sender, response) {
-				
+
 				/** If the sender is content script and the tab is the one that we're tracking */
 				if (msg.from === 'content' && sender.tab.id === CS.testingTabId)
 				{

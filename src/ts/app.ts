@@ -13,17 +13,20 @@ module ExtensionApp
 			$routeProvider.when('/setup',
 			{
 				templateUrl: 'views/intro.html',
-				controller: ExtensionApp.Controllers.IntroController
+				controller: ExtensionApp.Controllers.IntroController,
+				controllerAs: 'vm'
 			})
 			.when('/tests',
 			{
 				templateUrl: 'views/tests.html',
-				controller: ExtensionApp.Controllers.EventsController
+				controller: ExtensionApp.Controllers.EventsController,
+				controllerAs: 'vm'
 			})
 			.when('/preferences',
 			{
 				templateUrl: 'views/preferences.html',
-				controller: ExtensionApp.Controllers.PreferencesController
+				controller: ExtensionApp.Controllers.PreferencesController,
+				controllerAs: 'vm'
 			}).
 			otherwise({
 				redirectTo: '/setup'

@@ -1,56 +1,52 @@
 module ExtensionApp.Controllers
 {
-	/**
-	 * Events Scope
-	 */
-	interface IntroScope extends ng.IScope
+	export class IntroController
 	{
-		tab: any;
+		/** Scope variables */
+		tab: number;
 		url: string;
 		initialized: boolean;
 		propose: boolean;
+		fileName: string;
 
-		Initialize: any;
-	}
-
-	export class IntroController
-	{
 		/**
 		 * Dependency injection.
 		 */
-		static $inject = ['$scope', 'ChromeService', 'chrome'];
+		static $inject = ['$scope', 'ChromeService', 'TemplateService', 'chrome'];
 
 		/**
 		 * Constructor for events controller.
 		 * @param $scope the scope
 		 * @param ChromeService chrome service
 		 */
-		constructor(private $scope: IntroScope, private ChromeService: Services.ChromeService, private chrome: any)
+		constructor(private $scope, private ChromeService: Services.ChromeService, private TemplateService: Services.TemplateService, private chrome: any)
 		{
 			/** If the chrome service is not initialized present the base page request experience. */
 			if (!ChromeService.isInitialized)
 			{
-				$scope.initialized = false;
-				$scope.propose = false;
+				this.initialized = false;
+				this.propose = false;
 				this.InitializeEventHandlers();
 			}
 			/** If the chrome service is initialized show the tab id and url to the user. */
 			else
 			{
-				$scope.initialized = true;
-				$scope.tab = this.ChromeService.testingTabId;
-				$scope.url = this.ChromeService.events[0].url;
+				this.initialized = true;
+				this.tab = this.ChromeService.testingTabId;
+				this.url = this.ChromeService.events[0].url;
 			}
+		}
 
-			/** Initialize everything now that we know the base page and tab id. */
-			$scope.Initialize = () =>
-			{
-				$scope.initialized = true;
-				$scope.propose = false;
-				this.ChromeService.Initialize($scope.tab);
-				this.ChromeService.AddLoadEvent({url: $scope.url});
-				this.ChromeService.InitializeEventListeners();
-			}
+		/** 
+		 * Initialize everything now that we know the base page and tab id.
+		 */
+		Initialize()
+		{
+			this.initialized = true;
+			this.propose = false;
+			this.ChromeService.Initialize(this.tab);
+			this.ChromeService.AddLoadEvent({url: this.url});
+			this.ChromeService.InitializeEventListeners();
 		}
 
 		/**
@@ -59,7 +55,7 @@ module ExtensionApp.Controllers
 		InitializeEventHandlers()
 		{
 			var _ChromeService = this.ChromeService;
-			var scope = this.$scope;
+			var controller = this;
 			this.chrome.runtime.onMessage.addListener(function (msg, sender, response) {
 				
 				/** If the sender is content script */
@@ -70,14 +66,27 @@ module ExtensionApp.Controllers
 						/** Page load */
 						if (msg.subject === 'load')
 						{
-							scope.tab = sender.tab.id;
-							scope.url = msg.info.url;
-							scope.propose = true;
-							scope.$apply();
+							controller.tab = sender.tab.id;
+							controller.url = msg.info.url;
+							controller.propose = true;
+							controller.$scope.$apply();
 						}
 					}
 				}
 			});
+		}
+
+		/**
+		 * Set file name and try downloading
+		 */
+		SetFileName()
+		{
+			if (this.fileName && this.fileName.length > 0)
+			{
+				this.TemplateService.InitializeFileName(this.fileName);
+				return;
+			}
+			this.TemplateService.InitializeFileName('protractor.js');
 		}
 	}
 }
