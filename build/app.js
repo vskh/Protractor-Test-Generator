@@ -230,9 +230,13 @@ var ExtensionApp;
             /**
              * Constructor
              * @param chrome extension access
+             * @param ChromeService chrome service
              */
-            function TemplateService(chrome) {
+            function TemplateService(chrome, ChromeService) {
                 this.chrome = chrome;
+                this.ChromeService = ChromeService;
+                /** Element template */
+                this.elementTemplate = "element({0})";
             }
             /** Get file template */
             TemplateService.prototype.GetFileTemplate = function () {
@@ -244,8 +248,27 @@ var ExtensionApp;
                 var fileTemplate = this.GetFileTemplate();
                 /** File template replacement tags */
                 var testNameReplace = '%NAME%';
+                fileTemplate = fileTemplate.replace(testNameReplace, testName);
+                var internalTests = this.ComposeTests();
                 var testTemplate = '%TESTTEMPLATE%';
-                return fileTemplate.replace(testNameReplace, testName);
+                fileTemplate = fileTemplate.replace(testTemplate, internalTests);
+                return fileTemplate;
+            };
+            /** Compose the tests */
+            TemplateService.prototype.ComposeTests = function () {
+                var _this = this;
+                var tests = "";
+                this.ChromeService.events.forEach(function (value, index) {
+                    if (value.type === 'load') {
+                        // Replace with proper browser.get condition adding.
+                        tests += _this.AddBrowserGetStep(value.url);
+                    }
+                    else if (value.type === 'click') {
+                        // Click step registry
+                        tests += _this.AddClickStep(value.id, value.css);
+                    }
+                });
+                return tests;
             };
             /** Download file */
             TemplateService.prototype.DownloadFile = function (testName) {
@@ -289,6 +312,26 @@ var ExtensionApp;
                 };
                 rawFile.send(null);
                 return allText;
+            };
+            /** Browser get step */
+            TemplateService.prototype.AddBrowserGetStep = function (url) {
+                /** Get url template */
+                return this.formatString("browser.get('{0}');", url);
+            };
+            /** Click step */
+            TemplateService.prototype.AddClickStep = function (id, css) {
+                if (id && id.length > 0) {
+                    return this.formatString("element(by.id('{0}')).click();", id);
+                }
+                else if (css && css.length > 0) {
+                    return this.formatString("element(by.css('{0}')).click();", css);
+                }
+            };
+            /** Type in step */
+            TemplateService.prototype.TypeInStep = function (id, text) {
+                if (id && id.length > 0) {
+                    return this.formatString("element(by.id('{0}}')).sendKeys('{1}');", id, text);
+                }
             };
             /** Dependency injection */
             TemplateService.$inject = ['chrome', 'ChromeService'];
