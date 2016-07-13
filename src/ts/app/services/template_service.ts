@@ -3,17 +3,8 @@ module ExtensionApp.Services
 	/** Template service */
 	export class TemplateService
 	{
-		/** File name to be downloaded */
-		private fileName: string = 'protractor.js';
-
 		/** Dependency injection */
 		static $inject: string[] = ['chrome', 'ChromeService'];
-
-		/** Initialize the file name to be something else */
-		InitializeFileName(fileName: string)
-		{
-			this.fileName = fileName;
-		}
 
 		/**
 		 * Constructor
@@ -30,31 +21,29 @@ module ExtensionApp.Services
 		}
 
 		/** Compose file */
-		public ComposeFile()
+		public ComposeFile(testName: string): string
 		{
 			var fileTemplate = this.GetFileTemplate();
-			//fileTemplate.replace('%NAME%', )
-			/** File template replacement tags */
-			var testName: string = '%NAME%';
-			var testTemplate: string = '%TESTTEMPLATE%';
 
-			/*chrome.downloads.download({
-				url: "data:text/plain," + formatted,
-				filename: "tests.js",
-				conflictAction: "uniquify", // or "overwrite" / "prompt"
-				saveAs: false, // true gives save-as dialogue
-				}, function(downloadId) {
-					console.log("Downloaded item with ID", downloadId);
-			});*/
+			/** File template replacement tags */
+			var testNameReplace: string = '%NAME%';
+			fileTemplate = fileTemplate.replace(testNameReplace, testName);
+
+			var testTemplate: string = '%TESTTEMPLATE%';
+			return fileTemplate;
 		}
 
-		public DownloadFile(fileName: string, fileData: string)
+		/** Download file */
+		public DownloadFile(testName: string)
 		{
+			var fileData: string = this.ComposeFile(testName);
 			chrome.downloads.download({
 				url: "data:text/plain," + fileData,
-				filename: fileName,
-				conflictAction: "prompt", // or "overwrite" / "prompt"
-				saveAs: true, // true gives save-as dialogue
+				// Provide initial name to be protractor.js
+				filename: 'protractor.js',
+				conflictAction: "prompt",
+				// Open save as dialog
+				saveAs: true,
 				}, function(downloadId) {
 					console.log("Downloaded item with ID", downloadId);
 			});

@@ -3,8 +3,8 @@ module ExtensionApp.Controllers
 	/** Save controller */
 	export class SaveController
 	{
-		/** File name */
-		fileName: string;
+		/** Test name */
+		testName: string;
 
 		/** Dependency injection */
 		static $inject = ['TemplateService'];
@@ -18,23 +18,11 @@ module ExtensionApp.Controllers
 		}
 
 		/**
-		 * Set file name and try downloading
-		 */
-		SetFileName()
-		{
-			if (this.fileName && this.fileName.length > 0)
-			{
-				this.TemplateService.InitializeFileName(this.fileName);
-				return;
-			}
-		}
-
-		/** 
 		 * Download the test file
 		 */
-		DownloadTestFile()
+		Download()
 		{
-
+			this.TemplateService.DownloadFile(this.testName && this.testName.length > 0 ? this.testName : 'Recorded Test');
 		}
 	}
 }

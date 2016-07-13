@@ -24,7 +24,7 @@ module ExtensionApp.Controllers
 		{
 			$scope.Download = () =>
 			{
-				TemplateService.ComposeFile();
+				//TemplateService.ComposeFile();
 			}
 		}
 	}

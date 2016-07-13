@@ -233,39 +233,29 @@ var ExtensionApp;
              */
             function TemplateService(chrome) {
                 this.chrome = chrome;
-                /** File name to be downloaded */
-                this.fileName = 'protractor.js';
             }
-            /** Initialize the file name to be something else */
-            TemplateService.prototype.InitializeFileName = function (fileName) {
-                this.fileName = fileName;
-            };
             /** Get file template */
             TemplateService.prototype.GetFileTemplate = function () {
                 var fileTemplateUrl = chrome.extension.getURL('templates/file_template.js');
                 return this.readTextFile(fileTemplateUrl);
             };
             /** Compose file */
-            TemplateService.prototype.ComposeFile = function () {
+            TemplateService.prototype.ComposeFile = function (testName) {
                 var fileTemplate = this.GetFileTemplate();
-                //fileTemplate.replace('%NAME%', )
                 /** File template replacement tags */
-                var testName = '%NAME%';
+                var testNameReplace = '%NAME%';
                 var testTemplate = '%TESTTEMPLATE%';
-                /*chrome.downloads.download({
-                    url: "data:text/plain," + formatted,
-                    filename: "tests.js",
-                    conflictAction: "uniquify", // or "overwrite" / "prompt"
-                    saveAs: false, // true gives save-as dialogue
-                    }, function(downloadId) {
-                        console.log("Downloaded item with ID", downloadId);
-                });*/
+                return fileTemplate.replace(testNameReplace, testName);
             };
-            TemplateService.prototype.DownloadFile = function (fileName, fileData) {
+            /** Download file */
+            TemplateService.prototype.DownloadFile = function (testName) {
+                var fileData = this.ComposeFile(testName);
                 chrome.downloads.download({
                     url: "data:text/plain," + fileData,
-                    filename: fileName,
+                    // Provide initial name to be protractor.js
+                    filename: 'protractor.js',
                     conflictAction: "prompt",
+                    // Open save as dialog
                     saveAs: true
                 }, function (downloadId) {
                     console.log("Downloaded item with ID", downloadId);
@@ -466,7 +456,7 @@ var ExtensionApp;
             function PreferencesController($scope, TemplateService) {
                 this.TemplateService = TemplateService;
                 $scope.Download = function () {
-                    TemplateService.ComposeFile();
+                    //TemplateService.ComposeFile();
                 };
             }
             /** Dependency injection */
@@ -490,18 +480,10 @@ var ExtensionApp;
                 this.TemplateService = TemplateService;
             }
             /**
-             * Set file name and try downloading
-             */
-            SaveController.prototype.SetFileName = function () {
-                if (this.fileName && this.fileName.length > 0) {
-                    this.TemplateService.InitializeFileName(this.fileName);
-                    return;
-                }
-            };
-            /**
              * Download the test file
              */
-            SaveController.prototype.DownloadTestFile = function () {
+            SaveController.prototype.Download = function () {
+                this.TemplateService.DownloadFile(this.testName && this.testName.length > 0 ? this.testName : 'Recorded Test');
             };
             /** Dependency injection */
             SaveController.$inject = ['TemplateService'];
