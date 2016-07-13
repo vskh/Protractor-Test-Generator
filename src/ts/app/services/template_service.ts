@@ -3,13 +3,6 @@ module ExtensionApp.Services
 	/** Template service */
 	export class TemplateService
 	{
-		
-
-		/** Element template */
-		private elementTemplate: string = "element({0})";
-
-
-
 		/** Dependency injection */
 		static $inject: string[] = ['chrome', 'ChromeService'];
 
@@ -29,15 +22,14 @@ module ExtensionApp.Services
 		}
 
 		/** Compose file */
-		public ComposeFile(testName: string): string
-		{
+		public ComposeFile(testName: string): string {
 			var fileTemplate = this.GetFileTemplate();
 
 			/** File template replacement tags */
 			var testNameReplace: string = '%NAME%';
 			fileTemplate = fileTemplate.replace(testNameReplace, testName);
 
-			var internalTests = this.ComposeTests();
+			var internalTests = this.ComposeSteps();
 			var testTemplate: string = '%TESTTEMPLATE%';
 			fileTemplate = fileTemplate.replace(testTemplate, internalTests);
 			
@@ -45,7 +37,12 @@ module ExtensionApp.Services
 		}
 
 		/** Compose the tests */
-		private ComposeTests(): string	{
+		private ComposeTests(): string {
+			return "Tests to be returned here with steps in them...";
+		}
+
+		/** Compose the steps */
+		private ComposeSteps(): string	{
 			var tests: string = "";
 			this.ChromeService.events.forEach((value: any, index: number) => {
 				if (value.type === 'load')
@@ -57,6 +54,11 @@ module ExtensionApp.Services
 				{
 					// Click step registry
 					tests += this.AddClickStep(value.id, value.css);
+				}
+				else if (value.type === 'key')
+				{
+					// Key step registry
+					tests += this.AddTypeInStep(value.id, value.text);
 				}
 			});
 			return tests;
@@ -126,7 +128,7 @@ module ExtensionApp.Services
 		}
 
 		/** Type in step */
-		private TypeInStep(id: string, text: string): string {
+		private AddTypeInStep(id: string, text: string): string {
 			if (id && id.length > 0)
 			{
 				return this.formatString("element(by.id('{0}}')).sendKeys('{1}');", id, text);

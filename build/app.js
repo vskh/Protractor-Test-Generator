@@ -235,8 +235,6 @@ var ExtensionApp;
             function TemplateService(chrome, ChromeService) {
                 this.chrome = chrome;
                 this.ChromeService = ChromeService;
-                /** Element template */
-                this.elementTemplate = "element({0})";
             }
             /** Get file template */
             TemplateService.prototype.GetFileTemplate = function () {
@@ -249,13 +247,17 @@ var ExtensionApp;
                 /** File template replacement tags */
                 var testNameReplace = '%NAME%';
                 fileTemplate = fileTemplate.replace(testNameReplace, testName);
-                var internalTests = this.ComposeTests();
+                var internalTests = this.ComposeSteps();
                 var testTemplate = '%TESTTEMPLATE%';
                 fileTemplate = fileTemplate.replace(testTemplate, internalTests);
                 return fileTemplate;
             };
             /** Compose the tests */
             TemplateService.prototype.ComposeTests = function () {
+                return "Tests to be returned here with steps in them...";
+            };
+            /** Compose the steps */
+            TemplateService.prototype.ComposeSteps = function () {
                 var _this = this;
                 var tests = "";
                 this.ChromeService.events.forEach(function (value, index) {
@@ -266,6 +268,10 @@ var ExtensionApp;
                     else if (value.type === 'click') {
                         // Click step registry
                         tests += _this.AddClickStep(value.id, value.css);
+                    }
+                    else if (value.type === 'key') {
+                        // Key step registry
+                        tests += _this.AddTypeInStep(value.id, value.text);
                     }
                 });
                 return tests;
@@ -328,7 +334,7 @@ var ExtensionApp;
                 }
             };
             /** Type in step */
-            TemplateService.prototype.TypeInStep = function (id, text) {
+            TemplateService.prototype.AddTypeInStep = function (id, text) {
                 if (id && id.length > 0) {
                     return this.formatString("element(by.id('{0}}')).sendKeys('{1}');", id, text);
                 }
