@@ -35,6 +35,9 @@ module ExtensionApp.Controllers
 					['Mark as Setup', function ($itemScope) {
 						$itemScope.event.testtype = 'setup';
 					}],null,
+					['Mark as Step', function($itemScope) {
+						$itemScope.event.testtype = 'step';
+					}], null,
 					['Mark as Test', function ($itemScope) {
 						$itemScope.event.testtype = 'test';
 					}],null,

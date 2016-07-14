@@ -30,24 +30,32 @@ body {
 .setup
 {
 	background-color: yellow;
-	opacity: 0.6;
+	opacity: 0.8;
 	background-image: url('../images/cog.svg');
 	background-repeat: no-repeat;
-	background-position-x: 50%;
+	background-position-x: 100%;
 }
 .test
 {
 	background-color: #94de2d;
-	opacity: 0.6;
+	opacity: 0.8;
 	background-image: url('../images/flask.svg');
 	background-repeat: no-repeat;
-	background-position-x: 50%;
+	background-position-x: 100%;
 }
 .result
 {
 	background-color: #ff8888;
-	opacity: 0.6;
+	opacity: 0.8;
 	background-image: url('../images/exam.svg');
 	background-repeat: no-repeat;
-	background-position-x: 50%;
+	background-position-x: 100%;
+}
+.step
+{
+	background-color: #26beea;
+	opacity: 0.8;
+	background-image: url('../images/step.svg');
+	background-repeat: no-repeat;
+	background-position-x: 100%;
 }
