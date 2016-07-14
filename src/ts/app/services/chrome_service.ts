@@ -82,6 +82,11 @@ module ExtensionApp.Services
 				}
 				else if (msg.from === 'background')
 				{
+					/** Ensure event */
+					if(msg.subject === 'ensure')
+					{
+						CS.AddEnsureEvent({id: msg.info.id})
+					}
 					/**  */
 					if (msg.subject)
 					{
@@ -111,6 +116,12 @@ module ExtensionApp.Services
 		public AddClickEvent(event: any)
 		{
 			this.events.push({id: event.id, type: 'click'});
+		}
+
+		/** Add ensure event */
+		public AddEnsureEvent(event:any)
+		{
+			this.events.push({id: event.id, type: 'ensure', testtype: 'ensure'});
 		}
 
 		/** Add key event */

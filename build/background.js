@@ -17,7 +17,11 @@ chrome.runtime.onMessage.addListener(function (request, sender){
             title: "Ensure existence of element with id: '" + request.info.id + "'", 
             contexts:["all"], 
             onclick: function(){
-                console.log('onclick');
+                chrome.runtime.sendMessage({
+                    from: 'background',
+                    subject: 'ensure',
+                    info: {id: request.info.id}
+                });
             },
         });
     }

@@ -178,6 +178,10 @@ var ExtensionApp;
                         }
                     }
                     else if (msg.from === 'background') {
+                        /** Ensure event */
+                        if (msg.subject === 'ensure') {
+                            CS.AddEnsureEvent({ id: msg.info.id });
+                        }
                         /**  */
                         if (msg.subject) {
                             if (msg.subject === 'UrlChange') {
@@ -198,6 +202,10 @@ var ExtensionApp;
             /** Add click event */
             ChromeService.prototype.AddClickEvent = function (event) {
                 this.events.push({ id: event.id, type: 'click' });
+            };
+            /** Add ensure event */
+            ChromeService.prototype.AddEnsureEvent = function (event) {
+                this.events.push({ id: event.id, type: 'ensure', testtype: 'ensure' });
             };
             /** Add key event */
             ChromeService.prototype.AddKeyEvent = function (event) {

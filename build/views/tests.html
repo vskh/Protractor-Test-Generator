@@ -17,5 +17,9 @@
 			<span class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span>
 			<b>Pressed enter on:</b> item with id <em>'{{event.id}}'</em>
 		</div>
+		<div class="" ng-if="event.type === 'ensure'" style="word-wrap:break-word;">
+			<span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+			<b>Ensure existence</b> of element with id: <em>'{{event.id}}'</em>
+		</div>
 	</li>
 </ol>

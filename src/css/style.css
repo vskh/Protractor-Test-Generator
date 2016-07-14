@@ -59,3 +59,11 @@ body {
 	background-repeat: no-repeat;
 	background-position-x: 100%;
 }
+.ensure
+{
+	background-color: #ffa500;
+	opacity: 0.8;
+	background-image: url('../images/html.svg');
+	background-repeat: no-repeat;
+	background-position-x: 100%;
+}
