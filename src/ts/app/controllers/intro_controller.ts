@@ -54,11 +54,16 @@ module ExtensionApp.Controllers
 		 */
 		InitializeEventHandlers()
 		{
-			var _ChromeService = this.ChromeService;
 			var controller = this;
-			this.chrome.runtime.onMessage.addListener(function (msg, sender, response) {
-				
+			this.chrome.runtime.onMessage.addListener(function TemporaryListener(msg, sender, response) {
+
 				/** If the sender is content script */
+				if (controller.ChromeService.isInitialized)
+				{
+					controller.chrome.runtime.onMessage.removeListener(TemporaryListener);
+					return;
+				}
+
 				if (msg.from === 'content')
 				{
 					if (msg.subject)
