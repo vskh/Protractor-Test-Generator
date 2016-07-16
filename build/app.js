@@ -249,20 +249,29 @@ var ExtensionApp;
                 var fileTemplateUrl = chrome.extension.getURL('templates/file_template.js');
                 return this.readTextFile(fileTemplateUrl);
             };
+            /** Get test template */
+            TemplateService.prototype.GetTestTemplate = function () {
+                var fileTemplateUrl = chrome.extension.getURL('templates/test_template.js');
+                return this.readTextFile(fileTemplateUrl);
+            };
             /** Compose file */
             TemplateService.prototype.ComposeFile = function (testName) {
                 var fileTemplate = this.GetFileTemplate();
                 /** File template replacement tags */
                 var testNameReplace = '%NAME%';
                 fileTemplate = fileTemplate.replace(testNameReplace, testName);
-                var internalTests = this.ComposeSteps();
                 var testTemplate = '%TESTTEMPLATE%';
-                fileTemplate = fileTemplate.replace(testTemplate, internalTests);
+                fileTemplate = fileTemplate.replace(testTemplate, this.ComposeTests());
                 return fileTemplate;
             };
             /** Compose the tests */
             TemplateService.prototype.ComposeTests = function () {
-                return "Tests to be returned here with steps in them...";
+                var testTemplate = this.GetTestTemplate();
+                /** Test template replacement tags */
+                var test = '%TEST%';
+                var internalTests = this.ComposeSteps();
+                testTemplate = testTemplate.replace(test, internalTests);
+                return testTemplate;
             };
             /** Compose the steps */
             TemplateService.prototype.ComposeSteps = function () {
@@ -289,7 +298,6 @@ var ExtensionApp;
                         // Add ensure test
                         tests += _this.AddEnsureTest(value.id);
                     }
-                    tests += '\n\r';
                 });
                 return tests;
             };
@@ -365,7 +373,7 @@ var ExtensionApp;
             /** Add ensure test */
             TemplateService.prototype.AddEnsureTest = function (id) {
                 if (id && id.length > 0) {
-                    return this.formatString("expect(element(by.id('{0}').isPresent())).toBeTruthy();");
+                    return this.formatString("expect(element(by.id('{0}')).isPresent()).toBeTruthy();");
                 }
             };
             /** Dependency injection */

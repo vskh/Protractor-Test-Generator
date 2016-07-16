@@ -21,6 +21,12 @@ module ExtensionApp.Services
 			return this.readTextFile(fileTemplateUrl);
 		}
 
+		/** Get test template */
+		private GetTestTemplate(): string {
+			var fileTemplateUrl: string = chrome.extension.getURL('templates/test_template.js');
+			return this.readTextFile(fileTemplateUrl);
+		}
+
 		/** Compose file */
 		public ComposeFile(testName: string): string {
 			var fileTemplate = this.GetFileTemplate();
@@ -29,16 +35,22 @@ module ExtensionApp.Services
 			var testNameReplace: string = '%NAME%';
 			fileTemplate = fileTemplate.replace(testNameReplace, testName);
 
-			var internalTests = this.ComposeSteps();
 			var testTemplate: string = '%TESTTEMPLATE%';
-			fileTemplate = fileTemplate.replace(testTemplate, internalTests);
+			fileTemplate = fileTemplate.replace(testTemplate, this.ComposeTests());
 			
 			return fileTemplate;
 		}
 
 		/** Compose the tests */
 		private ComposeTests(): string {
-			return "Tests to be returned here with steps in them...";
+			var testTemplate = this.GetTestTemplate();
+
+			/** Test template replacement tags */
+			var test: string = '%TEST%';
+			var internalTests = this.ComposeSteps();
+			testTemplate = testTemplate.replace(test, internalTests);
+
+			return testTemplate;
 		}
 
 		/** Compose the steps */
@@ -70,7 +82,6 @@ module ExtensionApp.Services
 					// Add ensure test
 					tests += this.AddEnsureTest(value.id);
 				}
-				tests += '\n\r';
 			});
 
 			return tests;
@@ -159,7 +170,7 @@ module ExtensionApp.Services
 		private AddEnsureTest(id: string): string {
 			if (id && id.length > 0)
 			{
-				return this.formatString("expect(element(by.id('{0}').isPresent())).toBeTruthy();");
+				return this.formatString("expect(element(by.id('{0}')).isPresent()).toBeTruthy();");
 			}
 		}
 	}

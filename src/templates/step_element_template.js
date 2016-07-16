@@ -1,1 +1,0 @@
-element(by.model('todoList.todoText'))
