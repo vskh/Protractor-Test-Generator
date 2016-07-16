@@ -46,5 +46,14 @@ module ExtensionApp.Controllers
 					}]
 				];
 		}
+
+		/**
+		 * Remove event from the chrome service.
+		 * @param index Index to remove.
+		 */
+		RemoveEvent(index: number)
+		{
+			this.ChromeService.events = this.ChromeService.events.splice(index, 1);
+		}
 	}
 }

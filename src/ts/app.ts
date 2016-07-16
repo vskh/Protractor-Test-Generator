@@ -7,7 +7,10 @@
 module ExtensionApp
 {
 	angular.module('ExtensionApp',
-	['ngRoute', 'ExtensionApp.Controllers', 'ExtensionApp.Services', 'ui.bootstrap.contextMenu']).config(['$routeProvider',
+		['ngRoute',
+		'ExtensionApp.Controllers',
+		'ExtensionApp.Services',
+		'ui.bootstrap.contextMenu']).config(['$routeProvider',
 		function($routeProvider)
 		{
 			$routeProvider.when('/setup',

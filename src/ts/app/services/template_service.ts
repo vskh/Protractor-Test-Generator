@@ -92,8 +92,8 @@ module ExtensionApp.Services
 			var fileData: string = this.ComposeFile(testName);
 			chrome.downloads.download({
 				url: "data:text/plain," + fileData,
-				// Provide initial name to be protractor.js
-				filename: 'protractor.js',
+				// Provide initial name to be tests.js
+				filename: 'tests.js',
 				conflictAction: "prompt",
 				// Open save as dialog
 				saveAs: true,

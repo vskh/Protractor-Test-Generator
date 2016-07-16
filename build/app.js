@@ -306,8 +306,8 @@ var ExtensionApp;
                 var fileData = this.ComposeFile(testName);
                 chrome.downloads.download({
                     url: "data:text/plain," + fileData,
-                    // Provide initial name to be protractor.js
-                    filename: 'protractor.js',
+                    // Provide initial name to be tests.js
+                    filename: 'tests.js',
                     conflictAction: "prompt",
                     // Open save as dialog
                     saveAs: true
@@ -500,6 +500,13 @@ var ExtensionApp;
                     ];
             }
             /**
+             * Remove event from the chrome service.
+             * @param index Index to remove.
+             */
+            EventsController.prototype.RemoveEvent = function (index) {
+                this.ChromeService.events = this.ChromeService.events.splice(index, 1);
+            };
+            /**
              * Dependency injection.
              */
             EventsController.$inject = ['$scope', 'ChromeService', 'chrome'];
@@ -608,7 +615,10 @@ var ExtensionApp;
 /// <reference path="app/controllers/_all.ts"/>
 var ExtensionApp;
 (function (ExtensionApp) {
-    angular.module('ExtensionApp', ['ngRoute', 'ExtensionApp.Controllers', 'ExtensionApp.Services', 'ui.bootstrap.contextMenu']).config(['$routeProvider',
+    angular.module('ExtensionApp', ['ngRoute',
+        'ExtensionApp.Controllers',
+        'ExtensionApp.Services',
+        'ui.bootstrap.contextMenu']).config(['$routeProvider',
         function ($routeProvider) {
             $routeProvider.when('/setup', {
                 templateUrl: 'views/intro.html',
