@@ -482,7 +482,7 @@ var ExtensionApp;
                 this.$scope = $scope;
                 this.ChromeService = ChromeService;
                 this.chrome = chrome;
-                $scope.events = ChromeService.events;
+                $scope.events = this.ChromeService.events;
                 $scope.menuOptions =
                     [
                         ['Mark as Setup', function ($itemScope) {
@@ -504,7 +504,9 @@ var ExtensionApp;
              * @param index Index to remove.
              */
             EventsController.prototype.RemoveEvent = function (index) {
-                this.ChromeService.events = this.ChromeService.events.splice(index, 1);
+                if (this.ChromeService.events.length > 1) {
+                    this.ChromeService.events.splice(index, 1);
+                }
             };
             /**
              * Dependency injection.

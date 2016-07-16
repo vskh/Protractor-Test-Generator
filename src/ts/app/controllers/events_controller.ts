@@ -29,7 +29,7 @@ module ExtensionApp.Controllers
 		 */
 		constructor(private $scope: EventsScope, private ChromeService: Services.ChromeService, private chrome: any)
 		{
-			$scope.events = ChromeService.events;
+			$scope.events = this.ChromeService.events;
 			$scope.menuOptions =
 				[
 					['Mark as Setup', function ($itemScope) {
@@ -53,7 +53,10 @@ module ExtensionApp.Controllers
 		 */
 		RemoveEvent(index: number)
 		{
-			this.ChromeService.events = this.ChromeService.events.splice(index, 1);
+			if (this.ChromeService.events.length > 1)
+			{
+				this.ChromeService.events.splice(index, 1);
+			}
 		}
 	}
 }
