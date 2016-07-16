@@ -1,3 +1,4 @@
+var contextMenuCreated = false;
 chrome.browserAction.onClicked.addListener(function () {
     chrome.windows.create({
         url: 'extension.html',
@@ -9,21 +10,30 @@ chrome.browserAction.onClicked.addListener(function () {
     });
 });
 /** Context menu listening.. */
-/** This creates more than one menu item. Need to fix this. */
+/** Creation of more than one menu item is fixed, however it looks like there's a race condition */
 chrome.runtime.onMessage.addListener(function (request, sender){
     if (request.from === 'content' && request.subject === 'contextmenu')
     {
-        chrome.contextMenus.create({
-            title: "Ensure existence of element with id: '" + request.info.id + "'", 
-            contexts:["all"], 
-            onclick: function(){
-                chrome.runtime.sendMessage({
-                    from: 'background',
-                    subject: 'ensure',
-                    info: {id: request.info.id}
-                });
-            },
-        });
+        if (contextMenuCreated)
+        {
+            chrome.contextMenus.update("ensureContext", {title: "Ensure existence of element with id: '" + request.info.id + "'"});
+        }
+        else
+        {
+            chrome.contextMenus.create({
+                id: "ensureContext",
+                title: "Ensure existence of element with id: '" + request.info.id + "'", 
+                contexts:["all"], 
+                onclick: function(){
+                    chrome.runtime.sendMessage({
+                        from: 'background',
+                        subject: 'ensure',
+                        info: {id: request.info.id}
+                    });
+                },
+            });
+            contextMenuCreated = true;
+        }
     }
 });
 
