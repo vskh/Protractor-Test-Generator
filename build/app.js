@@ -281,6 +281,15 @@ var ExtensionApp;
                         // Key step registry
                         tests += _this.AddTypeInStep(value.id, value.text);
                     }
+                    else if (value.type === 'enter') {
+                        // Enter step registry
+                        tests += _this.AddEnterStep(value.id);
+                    }
+                    else if (value.type === 'ensure') {
+                        // Add ensure test
+                        tests += _this.AddEnsureTest(value.id);
+                    }
+                    tests += '\n\r';
                 });
                 return tests;
             };
@@ -341,10 +350,22 @@ var ExtensionApp;
                     return this.formatString("element(by.css('{0}')).click();", css);
                 }
             };
+            /** Add enter step */
+            TemplateService.prototype.AddEnterStep = function (id) {
+                if (id && id.length > 0) {
+                    return this.formatString("element(by.id('{0}')).sendKeys(protractor.Key.ENTER);");
+                }
+            };
             /** Type in step */
             TemplateService.prototype.AddTypeInStep = function (id, text) {
                 if (id && id.length > 0) {
-                    return this.formatString("element(by.id('{0}}')).sendKeys('{1}');", id, text);
+                    return this.formatString("element(by.id('{0}')).sendKeys('{1}');", id, text);
+                }
+            };
+            /** Add ensure test */
+            TemplateService.prototype.AddEnsureTest = function (id) {
+                if (id && id.length > 0) {
+                    return this.formatString("expect(element(by.id('{0}').isPresent())).toBeTruthy();");
                 }
             };
             /** Dependency injection */

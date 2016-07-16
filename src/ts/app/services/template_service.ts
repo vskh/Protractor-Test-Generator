@@ -60,7 +60,19 @@ module ExtensionApp.Services
 					// Key step registry
 					tests += this.AddTypeInStep(value.id, value.text);
 				}
+				else if (value.type === 'enter')
+				{
+					// Enter step registry
+					tests += this.AddEnterStep(value.id);
+				}
+				else if (value.type === 'ensure')
+				{
+					// Add ensure test
+					tests += this.AddEnsureTest(value.id);
+				}
+				tests += '\n\r';
 			});
+
 			return tests;
 		}
 
@@ -127,11 +139,27 @@ module ExtensionApp.Services
 			}
 		}
 
+		/** Add enter step */
+		private AddEnterStep(id: string): string {
+			if (id && id.length > 0)
+			{
+				return this.formatString("element(by.id('{0}')).sendKeys(protractor.Key.ENTER);");
+			}
+		}
+
 		/** Type in step */
 		private AddTypeInStep(id: string, text: string): string {
 			if (id && id.length > 0)
 			{
-				return this.formatString("element(by.id('{0}}')).sendKeys('{1}');", id, text);
+				return this.formatString("element(by.id('{0}')).sendKeys('{1}');", id, text);
+			}
+		}
+
+		/** Add ensure test */
+		private AddEnsureTest(id: string): string {
+			if (id && id.length > 0)
+			{
+				return this.formatString("expect(element(by.id('{0}').isPresent())).toBeTruthy();");
 			}
 		}
 	}
