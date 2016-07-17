@@ -131,21 +131,27 @@ var ExtensionApp;
         var ChromeService = (function () {
             /**
              * Constructor for the chrome service.
-             * @param $scope Scope
+             * @param $rootScope Scope
              * @param chrome Chrome runtime
              */
-            function ChromeService($rootScope, timeout, chrome) {
+            function ChromeService($rootScope, chrome) {
                 this.$rootScope = $rootScope;
-                this.timeout = timeout;
                 this.chrome = chrome;
                 /** Events array */
                 this.events = [];
-                /** Navigation? */
-                this.navigation = '';
                 /** Key queue */
                 this.keyQueue = [];
                 this.isInitialized = false;
             }
+            /**
+             * Clear all.
+             */
+            ChromeService.prototype.ClearAll = function () {
+                this.testingTabId = undefined;
+                this.isInitialized = false;
+                this.events = [];
+                this.keyQueue = [];
+            };
             /**
              * Ensure that we're only looking to the same tab
              * and registering events from that tab
@@ -223,7 +229,7 @@ var ExtensionApp;
                 this.events.push({ id: event.id, type: 'enter' });
             };
             /** Dependency injection. */
-            ChromeService.$inject = ['$rootScope', '$timeout', 'chrome'];
+            ChromeService.$inject = ['$rootScope', 'chrome'];
             return ChromeService;
         })();
         Services.ChromeService = ChromeService;
@@ -475,29 +481,28 @@ var ExtensionApp;
         var EventsController = (function () {
             /**
              * Constructor for events controller.
-             * @param $scope the scope
              * @param ChromeService chrome service
              */
-            function EventsController($scope, ChromeService, chrome) {
-                this.$scope = $scope;
+            function EventsController(ChromeService) {
                 this.ChromeService = ChromeService;
-                this.chrome = chrome;
-                $scope.events = this.ChromeService.events;
-                $scope.menuOptions =
-                    [
-                        ['Mark as Setup', function ($itemScope) {
-                                $itemScope.event.testtype = 'setup';
-                            }], null,
-                        ['Mark as Step', function ($itemScope) {
-                                $itemScope.event.testtype = 'step';
-                            }], null,
-                        ['Mark as Test', function ($itemScope) {
-                                $itemScope.event.testtype = 'test';
-                            }], null,
-                        ['Mark as Result', function ($itemScope) {
-                                $itemScope.event.testtype = 'result';
-                            }]
-                    ];
+                /**
+                 * Menu options
+                 */
+                this.menuOptions = [
+                    ['Mark as Setup', function ($itemScope) {
+                            $itemScope.event.testtype = 'setup';
+                        }], null,
+                    ['Mark as Step', function ($itemScope) {
+                            $itemScope.event.testtype = 'step';
+                        }], null,
+                    ['Mark as Test', function ($itemScope) {
+                            $itemScope.event.testtype = 'test';
+                        }], null,
+                    ['Mark as Result', function ($itemScope) {
+                            $itemScope.event.testtype = 'result';
+                        }]
+                ];
+                this.events = this.ChromeService.events;
             }
             /**
              * Remove event from the chrome service.
@@ -511,7 +516,7 @@ var ExtensionApp;
             /**
              * Dependency injection.
              */
-            EventsController.$inject = ['$scope', 'ChromeService', 'chrome'];
+            EventsController.$inject = ['ChromeService'];
             return EventsController;
         })();
         Controllers.EventsController = EventsController;

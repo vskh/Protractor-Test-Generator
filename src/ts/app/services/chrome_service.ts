@@ -8,12 +8,6 @@ module ExtensionApp.Services
 		/** Events array */
 		public events = [];
 
-		/** Navigation? */
-		public navigation: string = '';
-
-		/** Selection */
-		public selection: string;
-
 		/** If the service is initialized */
 		public isInitialized: boolean;
 
@@ -24,16 +18,27 @@ module ExtensionApp.Services
 		public testingTabId: any;
 
 		/** Dependency injection. */
-		static $inject = ['$rootScope', '$timeout', 'chrome'];
+		static $inject = ['$rootScope', 'chrome'];
 
 		/**
 		 * Constructor for the chrome service.
-		 * @param $scope Scope
+		 * @param $rootScope Scope
 		 * @param chrome Chrome runtime
 		 */
-		constructor(private $rootScope: ng.IRootScopeService, private timeout: ng.ITimeoutService, private chrome: any)
+		constructor(private $rootScope: ng.IRootScopeService, private chrome: any)
 		{
 			this.isInitialized = false;
+		}
+
+		/**
+		 * Clear all.
+		 */
+		public ClearAll()
+		{
+			this.testingTabId = undefined;
+			this.isInitialized = false;
+			this.events = [];
+			this.keyQueue = [];
 		}
 
 		/**

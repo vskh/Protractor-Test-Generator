@@ -1,19 +1,19 @@
 <ol class="list-group">
-	<li class="list-group-item" ng-repeat="event in events" ng-class="event.testtype">
+	<li class="list-group-item" ng-repeat="event in vm.events" ng-class="event.testtype">
 		<span class="btn-clipboard" ng-click="vm.RemoveEvent($index)"><span class="glyphicon glyphicon-minus" aria-hidden="true"></span></span>
-		<div class="" ng-if="event.type === 'key'" context-menu="menuOptions" style="word-wrap:break-word;">
+		<div class="" ng-if="event.type === 'key'" context-menu="vm.menuOptions" style="word-wrap:break-word;">
 			<span class="glyphicon glyphicon glyphicon-pencil" aria-hidden="true"></span>
 			<b>Typing:</b> <em>'{{event.text}}'</em> into input box with id: <em>'{{event.id}}'</em>
 		</div>
-		<div class="" ng-if="event.type === 'click'" context-menu="menuOptions" style="word-wrap:break-word;">
+		<div class="" ng-if="event.type === 'click'" context-menu="vm.menuOptions" style="word-wrap:break-word;">
 			<span class="glyphicon glyphicon glyphicon-hand-up" aria-hidden="true"></span>
 			<b>Clicked:</b> to item with id <em>'{{event.id}}'</em>
 		</div>
-		<div class="" ng-if="event.type === 'load'" context-menu="menuOptions" style="word-wrap:break-word;">
+		<div class="" ng-if="event.type === 'load'" context-menu="vm.menuOptions" style="word-wrap:break-word;">
 			<span class="glyphicon glyphicon glyphicon glyphicon-globe" aria-hidden="true"></span>
 			<b>Loaded new url:</b> <em>'{{event.url}}'</em>
 		</div>
-		<div class="" ng-if="event.type === 'enter'" context-menu="menuOptions" style="word-wrap:break-word;">
+		<div class="" ng-if="event.type === 'enter'" context-menu="vm.menuOptions" style="word-wrap:break-word;">
 			<span class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span>
 			<b>Pressed enter on:</b> item with id <em>'{{event.id}}'</em>
 		</div>

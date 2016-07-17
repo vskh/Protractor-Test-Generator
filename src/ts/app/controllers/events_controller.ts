@@ -2,49 +2,46 @@
 module ExtensionApp.Controllers
 {
 	/**
-	 * Events Scope
-	 */
-	interface EventsScope extends ng.IScope
-	{
-		events: any;
-		navigation: string;
-		selection: string;
-		menuOptions: any;
-	}
-
-	/**
 	 * Events controller class.
 	 */
 	export class EventsController
 	{
 		/**
+		 * Events array
+		 */
+		events: Array<any>;
+
+		/**
+		 * Menu options
+		 */
+		menuOptions: Array<any> = 
+		[
+			['Mark as Setup', function ($itemScope) {
+				$itemScope.event.testtype = 'setup';
+			}],null,
+			['Mark as Step', function($itemScope) {
+				$itemScope.event.testtype = 'step';
+			}], null,
+			['Mark as Test', function ($itemScope) {
+				$itemScope.event.testtype = 'test';
+			}],null,
+			['Mark as Result', function($itemScope) {
+				$itemScope.event.testtype = 'result';
+			}]
+		];
+
+		/**
 		 * Dependency injection.
 		 */
-		static $inject = ['$scope', 'ChromeService', 'chrome'];
+		static $inject = ['ChromeService'];
 
 		/**
 		 * Constructor for events controller.
-		 * @param $scope the scope
 		 * @param ChromeService chrome service
 		 */
-		constructor(private $scope: EventsScope, private ChromeService: Services.ChromeService, private chrome: any)
+		constructor(private ChromeService: Services.ChromeService)
 		{
-			$scope.events = this.ChromeService.events;
-			$scope.menuOptions =
-				[
-					['Mark as Setup', function ($itemScope) {
-						$itemScope.event.testtype = 'setup';
-					}],null,
-					['Mark as Step', function($itemScope) {
-						$itemScope.event.testtype = 'step';
-					}], null,
-					['Mark as Test', function ($itemScope) {
-						$itemScope.event.testtype = 'test';
-					}],null,
-					['Mark as Result', function($itemScope) {
-						$itemScope.event.testtype = 'result';
-					}]
-				];
+			this.events = this.ChromeService.events;
 		}
 
 		/**
