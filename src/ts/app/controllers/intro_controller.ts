@@ -80,5 +80,14 @@ module ExtensionApp.Controllers
 				}
 			});
 		}
+
+		/** Clear all */
+		ClearAll()
+		{
+			this.initialized = false;
+			this.propose = false;
+			this.ChromeService.ClearAll();
+			this.$scope.$apply();
+		}
 	}
 }

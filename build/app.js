@@ -468,6 +468,13 @@ var ExtensionApp;
                     }
                 });
             };
+            /** Clear all */
+            IntroController.prototype.ClearAll = function () {
+                this.initialized = false;
+                this.propose = false;
+                this.ChromeService.ClearAll();
+                this.$scope.$apply();
+            };
             /**
              * Dependency injection.
              */
@@ -497,7 +504,10 @@ var ExtensionApp;
                 this.menuOptions = [
                     ['Mark as Setup', function ($itemScope) {
                             $itemScope.event.testtype = 'setup';
-                        }], null,
+                        }, [
+                            ['Mark as Setup and Edit', function ($itemScope) {
+                                    $itemScope.event.testtype = 'setup';
+                                }]]], null,
                     ['Mark as Step', function ($itemScope) {
                             $itemScope.event.testtype = 'step';
                         }], null,
