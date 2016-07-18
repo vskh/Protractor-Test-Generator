@@ -124,13 +124,13 @@ module ExtensionApp.Services
 		}
 
 		/** Add ensure event */
-		public AddEnsureEvent(event:any)
+		public AddEnsureEvent(event:any): void
 		{
 			this.events.push({id: event.id, type: 'ensure', testtype: 'ensure'});
 		}
 
 		/** Add key event */
-		public AddKeyEvent(event: any)
+		public AddKeyEvent(event: any): void
 		{
 			if (this.keyQueue.length === 0)
 			{
@@ -145,9 +145,20 @@ module ExtensionApp.Services
 		}
 
 		/** Add Enter key event. */
-		public AddEnterEvent(event: any)
+		public AddEnterEvent(event: any): void
 		{
 			this.events.push({id: event.id, type: 'enter'});
+		}
+
+		/** Remove event */
+		public RemoveEvent(index: number): void
+		{
+			if (index === 0 || this.events.length === 0)
+			{
+				return;
+			}
+
+			this.events.splice(index, 1);
 		}
 	}
 }

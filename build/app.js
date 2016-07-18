@@ -228,6 +228,13 @@ var ExtensionApp;
             ChromeService.prototype.AddEnterEvent = function (event) {
                 this.events.push({ id: event.id, type: 'enter' });
             };
+            /** Remove event */
+            ChromeService.prototype.RemoveEvent = function (index) {
+                if (index === 0 || this.events.length === 0) {
+                    return;
+                }
+                this.events.splice(index, 1);
+            };
             /** Dependency injection. */
             ChromeService.$inject = ['$rootScope', 'chrome'];
             return ChromeService;
@@ -470,7 +477,6 @@ var ExtensionApp;
         Controllers.IntroController = IntroController;
     })(Controllers = ExtensionApp.Controllers || (ExtensionApp.Controllers = {}));
 })(ExtensionApp || (ExtensionApp = {}));
-/// <reference path="../../../../typings/chrome/chrome.d.ts"/>
 var ExtensionApp;
 (function (ExtensionApp) {
     var Controllers;
@@ -509,9 +515,7 @@ var ExtensionApp;
              * @param index Index to remove.
              */
             EventsController.prototype.RemoveEvent = function (index) {
-                if (this.ChromeService.events.length > 1) {
-                    this.ChromeService.events.splice(index, 1);
-                }
+                this.ChromeService.RemoveEvent(index);
             };
             /**
              * Dependency injection.

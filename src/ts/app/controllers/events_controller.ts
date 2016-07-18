@@ -1,4 +1,3 @@
-/// <reference path="../../../../typings/chrome/chrome.d.ts"/>
 module ExtensionApp.Controllers
 {
 	/**
@@ -50,10 +49,7 @@ module ExtensionApp.Controllers
 		 */
 		RemoveEvent(index: number)
 		{
-			if (this.ChromeService.events.length > 1)
-			{
-				this.ChromeService.events.splice(index, 1);
-			}
+			this.ChromeService.RemoveEvent(index);
 		}
 	}
 }
