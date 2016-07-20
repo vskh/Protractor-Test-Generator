@@ -81,7 +81,9 @@ module ExtensionApp.Controllers
 			});
 		}
 
-		/** Clear all */
+		/**
+		 * Clear all
+		 */
 		ClearAll()
 		{
 			this.initialized = false;

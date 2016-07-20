@@ -311,6 +311,7 @@ var ExtensionApp;
                         // Add ensure test
                         tests += _this.AddEnsureTest(value.id);
                     }
+                    tests = tests + "%0A";
                 });
                 return tests;
             };
@@ -468,7 +469,9 @@ var ExtensionApp;
                     }
                 });
             };
-            /** Clear all */
+            /**
+             * Clear all
+             */
             IntroController.prototype.ClearAll = function () {
                 this.initialized = false;
                 this.propose = false;

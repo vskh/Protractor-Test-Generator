@@ -82,6 +82,7 @@ module ExtensionApp.Services
 					// Add ensure test
 					tests += this.AddEnsureTest(value.id);
 				}
+				tests = tests + "%0A";
 			});
 
 			return tests;
