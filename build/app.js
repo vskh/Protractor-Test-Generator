@@ -272,9 +272,9 @@ var ExtensionApp;
                 var fileTemplate = this.GetFileTemplate();
                 /** File template replacement tags */
                 var testNameReplace = '%NAME%';
-                fileTemplate = fileTemplate.replace(testNameReplace, testName);
+                fileTemplate = fileTemplate.replace(testNameReplace, testName) + "%0A%09";
                 var testTemplate = '%TESTTEMPLATE%';
-                fileTemplate = fileTemplate.replace(testTemplate, this.ComposeTests());
+                fileTemplate = fileTemplate.replace(testTemplate, this.ComposeTests()) + "%0A%09";
                 return fileTemplate;
             };
             /** Compose the tests */
@@ -311,7 +311,7 @@ var ExtensionApp;
                         // Add ensure test
                         tests += _this.AddEnsureTest(value.id);
                     }
-                    tests = tests + "%0A";
+                    tests = tests + "%0A%09";
                 });
                 return tests;
             };

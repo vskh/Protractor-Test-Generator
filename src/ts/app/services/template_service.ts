@@ -33,10 +33,10 @@ module ExtensionApp.Services
 
 			/** File template replacement tags */
 			var testNameReplace: string = '%NAME%';
-			fileTemplate = fileTemplate.replace(testNameReplace, testName);
+			fileTemplate = fileTemplate.replace(testNameReplace, testName) + "%0A%09";
 
 			var testTemplate: string = '%TESTTEMPLATE%';
-			fileTemplate = fileTemplate.replace(testTemplate, this.ComposeTests());
+			fileTemplate = fileTemplate.replace(testTemplate, this.ComposeTests()) + "%0A%09";
 			
 			return fileTemplate;
 		}
@@ -82,7 +82,7 @@ module ExtensionApp.Services
 					// Add ensure test
 					tests += this.AddEnsureTest(value.id);
 				}
-				tests = tests + "%0A";
+				tests = tests + "%0A%09";
 			});
 
 			return tests;
