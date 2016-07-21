@@ -16,7 +16,16 @@ chrome.runtime.onMessage.addListener(function (request, sender){
     {
         if (contextMenuCreated)
         {
-            chrome.contextMenus.update("ensureContext", {title: "Ensure existence of element with id: '" + request.info.id + "'"});
+            chrome.contextMenus.update("ensureContext",
+                {
+                    title: "Ensure existence of element with id: '" + request.info.id + "'",
+                    onclick: function(){
+                        chrome.runtime.sendMessage({
+                            from: 'background',
+                            subject: 'ensure',
+                            info: {id: request.info.id}
+                        })}
+                });
         }
         else
         {
