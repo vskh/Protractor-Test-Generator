@@ -1,12 +1,13 @@
-document.addEventListener('contextmenu', function(event){
-	chrome.runtime.sendMessage({
-		from: 'content',
-		subject: 'contextmenu',
-		info: {id: event.target.id}
-	});
-});
 document.addEventListener("mousedown", function (event) {
-	if (isExternalEvent(event))
+	if (isExternalEvent(event) && event.button === 2)
+	{
+		chrome.runtime.sendMessage({
+			from: 'content',
+			subject: 'contextmenu',
+			info: {id: event.target.id}
+		});
+	}
+	else if (isExternalEvent(event) && event.button == 0)
 	{
 		chrome.runtime.sendMessage({
 			from: 'content',
@@ -16,8 +17,6 @@ document.addEventListener("mousedown", function (event) {
 	}
 }, true);
 document.addEventListener('DOMContentLoaded', function (event) {
-	console.log('page is ready');
-	console.log(event);
 	if (isExternalEvent(event))
 	{
 		chrome.runtime.sendMessage({
@@ -28,8 +27,6 @@ document.addEventListener('DOMContentLoaded', function (event) {
 	}
 }, true);
 document.addEventListener('focus', function (event) {
-	console.log('focused to: ' + event.target);
-	console.log(event);
 	if (isExternalEvent(event))
 	{
 		chrome.runtime.sendMessage({
@@ -39,7 +36,6 @@ document.addEventListener('focus', function (event) {
 		})
 	}
 }, true);
-
 document.addEventListener('keyup', function(event) {
 	if (isExternalEvent(event))
 	{

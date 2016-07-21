@@ -40,9 +40,6 @@ module ExtensionApp
 			otherwise({
 				redirectTo: '/setup'
 			})
-		}]).run(() =>
-		{
-			console.log('running the app');
-		});
+		}]).run(null);
 	angular.module('ExtensionApp').constant('chrome', chrome);
 }

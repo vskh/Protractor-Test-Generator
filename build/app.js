@@ -476,7 +476,6 @@ var ExtensionApp;
                 this.initialized = false;
                 this.propose = false;
                 this.ChromeService.ClearAll();
-                this.$scope.$apply();
             };
             /**
              * Dependency injection.
@@ -667,8 +666,6 @@ var ExtensionApp;
                 otherwise({
                 redirectTo: '/setup'
             });
-        }]).run(function () {
-        console.log('running the app');
-    });
+        }]).run(null);
     angular.module('ExtensionApp').constant('chrome', chrome);
 })(ExtensionApp || (ExtensionApp = {}));
