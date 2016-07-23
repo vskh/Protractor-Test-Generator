@@ -7,7 +7,7 @@
 </div>
 <div class="bs-callout bs-callout-info" ng-if="!vm.initialized && vm.propose">
 	<h4>Change detected!</h4>
-	<p>We detected you navigated to <i>'{{vm.url}}'</i> in chrome tab with id: <b>'{{vm.tab}}'</b>.</p>
+	<p>We detected you navigated to <i>'{{vm.url | limitTo:100}}{{vm.url.length > 100 ? '...' : ''}}'</i> in chrome tab with id: <b>'{{vm.tab}}'</b>.</p>
 	<p>Do you want to make this the base test page? <b>If not we'll update here until you're at the page you want :) </b></p>
 
 	<button type="button" class="btn btn-success" ng-click="vm.Initialize();">Yes - this is the page!</button>

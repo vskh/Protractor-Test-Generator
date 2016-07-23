@@ -11,7 +11,7 @@
 		</div>
 		<div class="" ng-if="event.type === 'load'" context-menu="vm.menuOptions" style="word-wrap:break-word;">
 			<span class="glyphicon glyphicon glyphicon glyphicon-globe" aria-hidden="true"></span>
-			<b>Loaded new url:</b> <em>'{{event.url}}'</em>
+			<b>Loaded new url:</b> <em>'{{event.url | limitTo:100}}{{event.url.length > 100 ? '...' : ''}}'</em>
 		</div>
 		<div class="" ng-if="event.type === 'enter'" context-menu="vm.menuOptions" style="word-wrap:break-word;">
 			<span class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span>
