@@ -10,7 +10,6 @@ chrome.browserAction.onClicked.addListener(function () {
     });
 });
 /** Context menu listening.. */
-/** Creation of more than one menu item is fixed, however it looks like there's a race condition */
 chrome.runtime.onMessage.addListener(function (request, sender){
     if (request.from === 'content' && request.subject === 'contextmenu')
     {
