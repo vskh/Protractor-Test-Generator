@@ -19,11 +19,33 @@ document.addEventListener("mousedown", function (event) {
 document.addEventListener('DOMContentLoaded', function (event) {
 	if (isExternalEvent(event))
 	{
-		chrome.runtime.sendMessage({
-			from: 'content',
-			subject: 'load',
-			info: {type: 'load', url: event.target.URL}
-		});
+		let iframes = document.getElementsByTagName('iframe');
+		// IFrames
+		if (iframes && iframes.length > 0)
+		{
+			var arr = [];
+			let iframeDetails = [];
+			for(var i = iframes.length; i--; iframeDetails.unshift(iframes[i]));
+
+			chrome.runtime.sendMessage({
+				from: 'content',
+				subject: 'loadwithiframe',
+				info: {
+					type: 'loadwithiframe',
+					url: event.target.URL,
+					iframes: iframeDetails
+				}
+			});
+		}
+		// No Iframes
+		else
+		{
+			chrome.runtime.sendMessage({
+				from: 'content',
+				subject: 'load',
+				info: {type: 'load', url: event.target.URL}
+			});
+		}
 	}
 }, true);
 document.addEventListener('focus', function (event) {
