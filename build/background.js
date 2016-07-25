@@ -44,13 +44,27 @@ chrome.runtime.onMessage.addListener(function (request, sender){
         }
     }
 });
+/*
+chrome.webRequest.onErrorOccurred.addListener(function(details){
+    console.log(details);
+}, {urls: [ "<all_urls>" ]});
 
-/** make sure we're sending a message to chrome service via messaging api. */
+/* make sure we're sending a message to chrome service via messaging api. 
 chrome.webRequest.onBeforeRequest.addListener(function(details){
     console.log(details);
-    chrome.runtime.sendMessage({
-			from: 'background',
-			subject: 'UrlChange',
-			info: {'noinfo': 'noinfo'}
-		})
-}, {urls: [ "<all_urls>" ]});
+    if (isExternalEvent(details.url))
+    {
+        console.log(details.url);
+        chrome.runtime.sendMessage({
+                from: 'background',
+                subject: 'UrlChange',
+                info: {'noinfo': 'noinfo'}
+            });
+    }
+}, {urls: [ "<all_urls>" ], types: ['script']});
+
+
+function isExternalEvent(url)
+{
+	return url.indexOf('chrome-extension') < 0;
+}*/

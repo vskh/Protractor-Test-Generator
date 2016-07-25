@@ -72,7 +72,7 @@ module ExtensionApp.Controllers
 						if (msg.subject === 'load')
 						{
 							controller.tab = sender.tab.id;
-							controller.url = msg.info.url;
+							controller.url = sender.tab.url;
 							controller.propose = true;
 							controller.$scope.$apply();
 						}

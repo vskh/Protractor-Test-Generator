@@ -170,7 +170,13 @@ var ExtensionApp;
                         if (msg.subject) {
                             /** Page load */
                             if (msg.subject === 'load') {
-                                CS.AddLoadEvent({ url: msg.info.url });
+                                var tabUrl = sender.tab.url;
+                                if (tabUrl === msg.info.url) {
+                                    CS.AddLoadEvent({ url: msg.info.url });
+                                }
+                                else {
+                                    CS.AddPartialLoadEvent({ url: msg.info.url });
+                                }
                             }
                             else if (msg.subject === 'click') {
                                 CS.AddClickEvent({ id: msg.info.id });
@@ -200,6 +206,15 @@ var ExtensionApp;
             /** Add event */
             ChromeService.prototype.AddEvent = function (event) {
                 this.events.push(event);
+                this.lastLoadEventIndex = this.events.length;
+            };
+            /** Add partial load event */
+            ChromeService.prototype.AddPartialLoadEvent = function (event) {
+                var partials = this.events[this.lastLoadEventIndex].partials;
+                if (!partials) {
+                    this.events[this.lastLoadEventIndex].partials = [];
+                }
+                this.events[this.lastLoadEventIndex].partials.push({ url: event.url });
             };
             /** Add load event */
             ChromeService.prototype.AddLoadEvent = function (event) {
@@ -461,7 +476,7 @@ var ExtensionApp;
                             /** Page load */
                             if (msg.subject === 'load') {
                                 controller.tab = sender.tab.id;
-                                controller.url = msg.info.url;
+                                controller.url = sender.tab.url;
                                 controller.propose = true;
                                 controller.$scope.$apply();
                             }

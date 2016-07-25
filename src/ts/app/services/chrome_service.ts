@@ -17,6 +17,9 @@ module ExtensionApp.Services
 		/** Chrome tab id */
 		public testingTabId: any;
 
+		/** Last load event index */
+		private lastLoadEventIndex: number;
+
 		/** Dependency injection. */
 		static $inject = ['$rootScope', 'chrome'];
 
@@ -66,7 +69,16 @@ module ExtensionApp.Services
 						/** Page load */
 						if (msg.subject === 'load')
 						{
-							CS.AddLoadEvent({url: msg.info.url});
+							let tabUrl = sender.tab.url;
+							if (tabUrl === msg.info.url)
+							{
+								CS.AddLoadEvent({url: msg.info.url});
+							}
+							// IFrame or some other async initialization.
+							else
+							{
+								CS.AddPartialLoadEvent({url: msg.info.url});
+							}
 						}
 						/** Click event */
 						else if (msg.subject === 'click')
@@ -109,6 +121,18 @@ module ExtensionApp.Services
 		public AddEvent(event: any)
 		{
 			this.events.push(event);
+			this.lastLoadEventIndex = this.events.length;
+		}
+
+		/** Add partial load event */
+		public AddPartialLoadEvent(event: any)
+		{
+			let partials = this.events[this.lastLoadEventIndex].partials;
+			if (!partials)
+			{
+				this.events[this.lastLoadEventIndex].partials = [];
+			}
+			this.events[this.lastLoadEventIndex].partials.push({url: event.url});
 		}
 
 		/** Add load event */
