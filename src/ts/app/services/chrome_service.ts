@@ -121,7 +121,6 @@ module ExtensionApp.Services
 		public AddEvent(event: any)
 		{
 			this.events.push(event);
-			this.lastLoadEventIndex = this.events.length;
 		}
 
 		/** Add partial load event */
@@ -139,6 +138,8 @@ module ExtensionApp.Services
 		public AddLoadEvent(event: any)
 		{
 			this.events.push({url: event.url, type: 'load'});
+			// last index
+			this.lastLoadEventIndex = this.events.length -1 ;
 		}
 
 		/** Add click event */

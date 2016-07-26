@@ -206,7 +206,6 @@ var ExtensionApp;
             /** Add event */
             ChromeService.prototype.AddEvent = function (event) {
                 this.events.push(event);
-                this.lastLoadEventIndex = this.events.length;
             };
             /** Add partial load event */
             ChromeService.prototype.AddPartialLoadEvent = function (event) {
@@ -219,6 +218,8 @@ var ExtensionApp;
             /** Add load event */
             ChromeService.prototype.AddLoadEvent = function (event) {
                 this.events.push({ url: event.url, type: 'load' });
+                // last index
+                this.lastLoadEventIndex = this.events.length - 1;
             };
             /** Add click event */
             ChromeService.prototype.AddClickEvent = function (event) {
