@@ -101,3 +101,7 @@ body {
 {
 	cursor: pointer;
 }
+.collapse
+{
+	word-break: break-word;
+}

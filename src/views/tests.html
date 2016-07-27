@@ -21,10 +21,10 @@
 			<span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
 			<b>Ensure existence</b> of element with id: <em>'{{event.id}}'</em>
 		</div>
-		<div class="collapse" id="coldiv{{$index}}">
-			<div class="card card-block">
-				Example text.
-			</div>
+		<div class="collapse" id="coldiv{{$index}}" ng-if="event.partials">
+			<ul ng-repeat="partial in event.partials" style="padding-left:20px;">
+				<li>{{partial.url | limitTo:100}}</li>
+			</ul>
 		</div>
 	</li>
 </ol>
