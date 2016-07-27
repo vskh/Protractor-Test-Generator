@@ -492,6 +492,7 @@ var ExtensionApp;
                 this.initialized = false;
                 this.propose = false;
                 this.ChromeService.ClearAll();
+                this.InitializeEventHandlers();
             };
             /**
              * Dependency injection.

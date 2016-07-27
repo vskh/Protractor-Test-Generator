@@ -89,6 +89,7 @@ module ExtensionApp.Controllers
 			this.initialized = false;
 			this.propose = false;
 			this.ChromeService.ClearAll();
+			this.InitializeEventHandlers();
 		}
 	}
 }
