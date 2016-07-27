@@ -16,7 +16,14 @@
 	<div class="bs-callout bs-callout-success">
 		<h4>Test page initialized!</h4>
 		<p>We will be recording the events in tab: <b>'{{vm.tab}}'</b> with url: <i>'{{vm.url}}'</i>.</p>
+		<a href="#/tests">See the events as they are generated</a>
 	</div>
-
-	<button type="button" class="btn btn-danger" ng-click="vm.ClearAll();">Restart</button>
+	<div class="bs-callout bs-callout-success">	
+		<h4>Restart the recording</h4>
+		<p>The events that you're generating in tab: <b>'{{vm.tab}}'</b> are being recorded now. Restarting this process will delete the events 
+		that you've generated so far. <b><a href="#/save">Save your tests</a></b> or 
+		<p>
+			<button type="button" class="btn btn-danger" ng-click="vm.ClearAll();">Restart the process</button>
+		</p>
+	</div>	
 </div>
