@@ -97,3 +97,7 @@ body {
 {
 	color:white;
 }
+.list-group-item
+{
+	cursor: pointer;
+}
