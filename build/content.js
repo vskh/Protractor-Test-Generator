@@ -4,7 +4,7 @@ document.addEventListener("mousedown", function (event) {
 		chrome.runtime.sendMessage({
 			from: 'content',
 			subject: 'contextmenu',
-			info: {id: event.target.id}
+			info: {id: event.target.id, name: event.target.name, className: event.target.className}
 		});
 	}
 	else if (isExternalEvent(event) && event.button == 0)
