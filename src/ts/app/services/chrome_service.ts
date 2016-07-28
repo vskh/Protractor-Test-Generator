@@ -83,7 +83,7 @@ module ExtensionApp.Services
 						/** Click event */
 						else if (msg.subject === 'click')
 						{
-							CS.AddClickEvent({id: msg.info.id});
+							CS.AddClickEvent({id: msg.info.id, name: msg.info.name, className: msg.info.className});
 						}
 						/** Key up event */
 						else if (msg.subject === 'text')

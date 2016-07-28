@@ -179,7 +179,7 @@ var ExtensionApp;
                                 }
                             }
                             else if (msg.subject === 'click') {
-                                CS.AddClickEvent({ id: msg.info.id });
+                                CS.AddClickEvent({ id: msg.info.id, name: msg.info.name, className: msg.info.className });
                             }
                             else if (msg.subject === 'text') {
                                 CS.AddKeyEvent({ id: msg.info.id, text: msg.info.text });
