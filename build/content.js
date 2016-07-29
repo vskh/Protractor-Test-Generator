@@ -16,11 +16,61 @@ document.addEventListener("mousedown", function (event) {
 		});
 	}
 }, true);
-/*document.addEventListener('DOMSubtreeModified', function(event) {
-	console.log(event);
-});*/
+document.addEventListener('DOMSubtreeModified', function(event) {
+	if (document.getElementsByTagName('iframe').length !== 0)
+	{
+		var previousId = undefined;
+		var dLocal = document;
+
+		var monitor = setInterval(function(){
+			var elem = dLocal.activeElement;
+			if(elem && elem.tagName == 'IFRAME')
+			{
+				// Context is changed.
+				if (!previousId || previousId != elem.id)
+				{
+					previousId = elem.id;
+					console.log('iframe2 clicked with id: '+elem.id+ ' and url:' +document.URL);
+					
+					//clearInterval(monitor);
+				}
+			}
+		}, 100);
+	}
+});
+
 document.addEventListener('DOMContentLoaded', function (event) {
-	if (isExternalEvent(event))
+
+	console.log('document loaded with url: '+document.URL);
+	console.log(document.getElementsByTagName('iframe'));
+	if (document.getElementsByTagName('iframe').length !== 0)
+	{
+		var previousId = undefined;
+		var dLocal = document;
+
+		var monitor = setInterval(function(){
+			var elem = dLocal.activeElement;
+			if(elem && elem.tagName == 'IFRAME')
+			{
+				// Context is changed.
+				if (!previousId || previousId != elem.id)
+				{
+					previousId = elem.id;
+					//console.log('iframe clicked with id: '+elem.id+ ' and url:' +document.URL);
+					if (isExternalEvent(event))
+					{
+						chrome.runtime.sendMessage({
+							from: 'content',
+							subject: 'iframeload',
+							info: {type: 'iframeload', url: event.target.URL, id: elem.id}
+						});
+					}
+					//clearInterval(monitor);
+				}
+			}
+		}, 100);
+	}
+	else if (isExternalEvent(event))
 	{
 		chrome.runtime.sendMessage({
 			from: 'content',

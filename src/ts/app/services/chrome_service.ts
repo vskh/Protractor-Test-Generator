@@ -23,6 +23,8 @@ module ExtensionApp.Services
 		/** Dependency injection. */
 		static $inject = ['$rootScope', 'chrome'];
 
+		public frameStack = {};
+
 		/**
 		 * Constructor for the chrome service.
 		 * @param $rootScope Scope
@@ -95,6 +97,10 @@ module ExtensionApp.Services
 						{
 							CS.AddEnterEvent({id: msg.info.id});
 						}
+						/*else if (msg.subject === 'iframeload')
+						{
+							CS.AddIFrameLoadEvent({id: msg.info.id, url: msg.info.url});
+						}*/
 					}
 				}
 				else if (msg.from === 'background')
@@ -122,6 +128,14 @@ module ExtensionApp.Services
 		{
 			this.events.push(event);
 		}
+
+		/*public AddIFrameLoadEvent(event: any)
+		{
+			if (!this.frameStack[event.url])
+			{
+				this.frameStack[event.url] = event.id;
+			}
+		}*/
 
 		/** Add partial load event */
 		public AddPartialLoadEvent(event: any)
