@@ -97,10 +97,14 @@ module ExtensionApp.Services
 						{
 							CS.AddEnterEvent({id: msg.info.id});
 						}
-						/*else if (msg.subject === 'iframeload')
+						else if (msg.subject === 'iframeload')
 						{
 							CS.AddIFrameLoadEvent({id: msg.info.id, url: msg.info.url});
-						}*/
+						}
+						else if (msg.subject === 'iframesubload')
+						{
+							CS.AddIFrameSub({id: msg.info.id, url: msg.info.url});
+						}
 					}
 				}
 				else if (msg.from === 'background')
@@ -129,13 +133,18 @@ module ExtensionApp.Services
 			this.events.push(event);
 		}
 
-		/*public AddIFrameLoadEvent(event: any)
+		public AddIFrameSub(event: any)
 		{
-			if (!this.frameStack[event.url])
+			this.events.push({id: event.id, type: 'iframesubload', url: event.url})
+		}
+		public AddIFrameLoadEvent(event: any)
+		{
+			this.events.push({id: event.id, type: 'iframeload', url: event.url});
+			/*if (!this.frameStack[event.url])
 			{
 				this.frameStack[event.url] = event.id;
-			}
-		}*/
+			}*/
+		}
 
 		/** Add partial load event */
 		public AddPartialLoadEvent(event: any)

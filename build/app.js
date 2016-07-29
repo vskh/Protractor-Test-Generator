@@ -141,6 +141,7 @@ var ExtensionApp;
                 this.events = [];
                 /** Key queue */
                 this.keyQueue = [];
+                this.frameStack = {};
                 this.isInitialized = false;
             }
             /**
@@ -187,6 +188,12 @@ var ExtensionApp;
                             else if (msg.subject === 'enter') {
                                 CS.AddEnterEvent({ id: msg.info.id });
                             }
+                            else if (msg.subject === 'iframeload') {
+                                CS.AddIFrameLoadEvent({ id: msg.info.id, url: msg.info.url });
+                            }
+                            else if (msg.subject === 'iframesubload') {
+                                CS.AddIFrameSub({ id: msg.info.id, url: msg.info.url });
+                            }
                         }
                     }
                     else if (msg.from === 'background') {
@@ -206,6 +213,16 @@ var ExtensionApp;
             /** Add event */
             ChromeService.prototype.AddEvent = function (event) {
                 this.events.push(event);
+            };
+            ChromeService.prototype.AddIFrameSub = function (event) {
+                this.events.push({ id: event.id, type: 'iframesubload', url: event.url });
+            };
+            ChromeService.prototype.AddIFrameLoadEvent = function (event) {
+                this.events.push({ id: event.id, type: 'iframeload', url: event.url });
+                /*if (!this.frameStack[event.url])
+                {
+                    this.frameStack[event.url] = event.id;
+                }*/
             };
             /** Add partial load event */
             ChromeService.prototype.AddPartialLoadEvent = function (event) {

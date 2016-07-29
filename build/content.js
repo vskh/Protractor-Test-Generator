@@ -16,22 +16,25 @@ document.addEventListener("mousedown", function (event) {
 		});
 	}
 }, true);
+var previousElement;
 document.addEventListener('DOMSubtreeModified', function(event) {
 	if (document.getElementsByTagName('iframe').length !== 0)
 	{
-		var previousId = undefined;
-		var dLocal = document;
-
+		//var previousId = undefined;
 		var monitor = setInterval(function(){
-			var elem = dLocal.activeElement;
+			var elem = document.activeElement;
 			if(elem && elem.tagName == 'IFRAME')
 			{
 				// Context is changed.
-				if (!previousId || previousId != elem.id)
+				if (!previousElement || previousElement != elem.id)
 				{
-					previousId = elem.id;
-					console.log('iframe2 clicked with id: '+elem.id+ ' and url:' +document.URL);
-					
+					previousElement = elem.id;
+					//console.log('iframe2 clicked with id: '+elem.id+ ' and url:' +document.URL);
+					chrome.runtime.sendMessage({
+						from: 'content',
+						subject: 'iframesubload',
+						info: {type: 'iframesubload', url: event.target.URL, id: elem.id}
+					});
 					//clearInterval(monitor);
 				}
 			}
@@ -45,17 +48,14 @@ document.addEventListener('DOMContentLoaded', function (event) {
 	console.log(document.getElementsByTagName('iframe'));
 	if (document.getElementsByTagName('iframe').length !== 0)
 	{
-		var previousId = undefined;
-		var dLocal = document;
-
 		var monitor = setInterval(function(){
-			var elem = dLocal.activeElement;
+			var elem = document.activeElement;
 			if(elem && elem.tagName == 'IFRAME')
 			{
 				// Context is changed.
-				if (!previousId || previousId != elem.id)
+				if (!previousElement || previousElement != elem.id)
 				{
-					previousId = elem.id;
+					previousElement = elem.id;
 					//console.log('iframe clicked with id: '+elem.id+ ' and url:' +document.URL);
 					if (isExternalEvent(event))
 					{
