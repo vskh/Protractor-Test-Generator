@@ -43,34 +43,7 @@ document.addEventListener('DOMSubtreeModified', function(event) {
 });
 
 document.addEventListener('DOMContentLoaded', function (event) {
-
-	console.log('document loaded with url: '+document.URL);
-	console.log(document.getElementsByTagName('iframe'));
-	if (document.getElementsByTagName('iframe').length !== 0)
-	{
-		var monitor = setInterval(function(){
-			var elem = document.activeElement;
-			if(elem && elem.tagName == 'IFRAME')
-			{
-				// Context is changed.
-				if (!previousElement || previousElement != elem.id)
-				{
-					previousElement = elem.id;
-					//console.log('iframe clicked with id: '+elem.id+ ' and url:' +document.URL);
-					if (isExternalEvent(event))
-					{
-						chrome.runtime.sendMessage({
-							from: 'content',
-							subject: 'iframeload',
-							info: {type: 'iframeload', url: event.target.URL, id: elem.id}
-						});
-					}
-					//clearInterval(monitor);
-				}
-			}
-		}, 100);
-	}
-	else if (isExternalEvent(event))
+	if (isExternalEvent(event))
 	{
 		chrome.runtime.sendMessage({
 			from: 'content',
