@@ -21,13 +21,9 @@
 			<span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
 			<b>Ensure existence</b> of element with id: <em>'{{event.id}}'</em>
 		</div>
-		<div class="" ng-if="event.type === 'iframeload'" style="word-wrap:break-word;">
-			<span class="glyphicon glyphicon-asterisk" aria-hidden="true"></span>
-			<b>IFrame loaded with</b> id: <em>'{{event.id}}'</em>
-		</div>
 		<div class="" ng-if="event.type === 'iframesubload'" style="word-wrap:break-word;">
 			<span class="glyphicon glyphicon-asterisk" aria-hidden="true"></span>
-			<b>Testing</b> id: <em>'{{event.id}}'</em>
+			<b>Loaded IFrame with id: '{{event.id}}'</b> and url <em>{{event.url | limitTo:100}}</em>
 		</div>
 		<div class="collapse" id="coldiv{{$index}}" ng-if="event.partials">
 			<ul ng-repeat="partial in event.partials" style="padding-left:20px;">

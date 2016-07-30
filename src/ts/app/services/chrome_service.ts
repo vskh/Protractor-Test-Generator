@@ -97,10 +97,6 @@ module ExtensionApp.Services
 						{
 							CS.AddEnterEvent({id: msg.info.id});
 						}
-						else if (msg.subject === 'iframeload')
-						{
-							CS.AddIFrameLoadEvent({id: msg.info.id, url: msg.info.url});
-						}
 						else if (msg.subject === 'iframesubload')
 						{
 							CS.AddIFrameSub({id: msg.info.id, url: msg.info.url});
@@ -136,14 +132,6 @@ module ExtensionApp.Services
 		public AddIFrameSub(event: any)
 		{
 			this.events.push({id: event.id, type: 'iframesubload', url: event.url})
-		}
-		public AddIFrameLoadEvent(event: any)
-		{
-			this.events.push({id: event.id, type: 'iframeload', url: event.url});
-			/*if (!this.frameStack[event.url])
-			{
-				this.frameStack[event.url] = event.id;
-			}*/
 		}
 
 		/** Add partial load event */
