@@ -90,7 +90,7 @@ module ExtensionApp.Services
 						/** Key up event */
 						else if (msg.subject === 'text')
 						{
-							CS.AddKeyEvent({id: msg.info.id, text: msg.info.text});
+							CS.AddKeyEvent({id: msg.info.id, text: msg.info.text, name: msg.info.name, className: msg.info.className});
 						}
 						/** Enter event */
 						else if (msg.subject === 'enter')
@@ -171,12 +171,12 @@ module ExtensionApp.Services
 			if (this.keyQueue.length === 0)
 			{
 				this.keyQueue.push({id: event.id, text: event.text});
-				this.events.push({id: event.id, text: event.text, type: 'key'});
+				this.events.push({id: event.id, text: event.text, name: event.name, className: event.className, type: 'key'});
 			}
 			else if (this.keyQueue[this.keyQueue.length - 1].id == event.id)
 			{
 				this.events.pop();
-				this.events.push({id: event.id, text: event.text, type: 'key'});
+				this.events.push({id: event.id, text: event.text, name: event.name, className: event.className, type: 'key'});
 			}
 		}
 

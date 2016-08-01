@@ -183,7 +183,7 @@ var ExtensionApp;
                                 CS.AddClickEvent({ id: msg.info.id, name: msg.info.name, className: msg.info.className });
                             }
                             else if (msg.subject === 'text') {
-                                CS.AddKeyEvent({ id: msg.info.id, text: msg.info.text });
+                                CS.AddKeyEvent({ id: msg.info.id, text: msg.info.text, name: msg.info.name, className: msg.info.className });
                             }
                             else if (msg.subject === 'enter') {
                                 CS.AddEnterEvent({ id: msg.info.id });
@@ -240,11 +240,11 @@ var ExtensionApp;
             ChromeService.prototype.AddKeyEvent = function (event) {
                 if (this.keyQueue.length === 0) {
                     this.keyQueue.push({ id: event.id, text: event.text });
-                    this.events.push({ id: event.id, text: event.text, type: 'key' });
+                    this.events.push({ id: event.id, text: event.text, name: event.name, className: event.className, type: 'key' });
                 }
                 else if (this.keyQueue[this.keyQueue.length - 1].id == event.id) {
                     this.events.pop();
-                    this.events.push({ id: event.id, text: event.text, type: 'key' });
+                    this.events.push({ id: event.id, text: event.text, name: event.name, className: event.className, type: 'key' });
                 }
             };
             /** Add Enter key event. */

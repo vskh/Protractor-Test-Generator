@@ -20,7 +20,6 @@ var previousElement;
 document.addEventListener('DOMSubtreeModified', function(event) {
 	if (document.getElementsByTagName('iframe').length !== 0)
 	{
-		//var previousId = undefined;
 		var monitor = setInterval(function(){
 			var elem = document.activeElement;
 			if(elem && elem.tagName == 'IFRAME')
@@ -29,13 +28,11 @@ document.addEventListener('DOMSubtreeModified', function(event) {
 				if (!previousElement || previousElement != elem.id)
 				{
 					previousElement = elem.id;
-					//console.log('iframe2 clicked with id: '+elem.id+ ' and url:' +document.URL);
 					chrome.runtime.sendMessage({
 						from: 'content',
 						subject: 'iframesubload',
 						info: {type: 'iframesubload', url: event.target.URL, id: elem.id}
 					});
-					//clearInterval(monitor);
 				}
 			}
 		}, 100);
@@ -70,7 +67,7 @@ document.addEventListener('keyup', function(event) {
 			chrome.runtime.sendMessage({
 				from: 'content',
 				subject: 'enter',
-				info: {id: event.target.id}
+				info: {id: event.target.id, name: event.target.name, className: event.target.className}
 			});
 		}
 		else if (event.target.value)
@@ -78,7 +75,7 @@ document.addEventListener('keyup', function(event) {
 			chrome.runtime.sendMessage({
 				from: 'content',
 				subject: 'text',
-				info: {id: event.target.id, text: event.target.value}
+				info: {id: event.target.id, text: event.target.value, name: event.target.name, className: event.target.className}
 			});
 		}
 	}
