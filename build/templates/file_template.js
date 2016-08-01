@@ -1,3 +1,4 @@
-describe('test suite for %NAME%', function() { browser.ignoreSynchronization = true;
-  %TESTTEMPLATE%
+describe('test suite for %NAME%', function() {
+  %0A%09browser.ignoreSynchronization = true;
+  %0A%09%TESTTEMPLATE%
 });

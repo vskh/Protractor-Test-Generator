@@ -57,6 +57,7 @@ module ExtensionApp.Services
 		private ComposeSteps(): string	{
 			var tests: string = "";
 			this.ChromeService.events.forEach((value: any, index: number) => {
+				tests += "%09%09";
 				if (value.type === 'load')
 				{
 					// Replace with proper browser.get condition adding.
@@ -82,7 +83,11 @@ module ExtensionApp.Services
 					// Add ensure test
 					tests += this.AddEnsureTest(value.id);
 				}
-				tests = tests + "%0A%09";
+				else if (value.type === 'iframesubload')
+				{
+					// Switch context to iframe
+					tests += this.SwitchToIFrameContext(value.id);
+				}
 			});
 
 			return tests;
@@ -136,18 +141,18 @@ module ExtensionApp.Services
 		/** Browser get step */
 		private AddBrowserGetStep(url: string): string {
 			/** Get url template */
-			return this.formatString("browser.get('{0}');", url);
+			return this.formatString("browser.get('{0}');%0A", url);
 		}
 
 		/** Click step */
 		private AddClickStep(id: string, css: string) : string {
 			if (id && id.length > 0)
 			{
-				return this.formatString("element(by.id('{0}')).click();", id);
+				return this.formatString("element(by.id('{0}')).click();%0A", id);
 			}
 			else if (css && css.length > 0)
 			{
-				return this.formatString("element(by.css('{0}')).click();", css);
+				return this.formatString("element(by.css('{0}')).click();%0A", css);
 			}
 		}
 
@@ -155,7 +160,7 @@ module ExtensionApp.Services
 		private AddEnterStep(id: string): string {
 			if (id && id.length > 0)
 			{
-				return this.formatString("element(by.id('{0}')).sendKeys(protractor.Key.ENTER);");
+				return this.formatString("element(by.id('{0}')).sendKeys(protractor.Key.ENTER);%0A", id);
 			}
 		}
 
@@ -163,7 +168,7 @@ module ExtensionApp.Services
 		private AddTypeInStep(id: string, text: string): string {
 			if (id && id.length > 0)
 			{
-				return this.formatString("element(by.id('{0}')).sendKeys('{1}');", id, text);
+				return this.formatString("element(by.id('{0}')).sendKeys('{1}');%0A", id, text);
 			}
 		}
 
@@ -171,7 +176,17 @@ module ExtensionApp.Services
 		private AddEnsureTest(id: string): string {
 			if (id && id.length > 0)
 			{
-				return this.formatString("expect(element(by.id('{0}')).isPresent()).toBeTruthy();");
+				return this.formatString("expect(element(by.id('{0}')).isPresent()).toBeTruthy();%0A", id);
+			}
+		}
+
+		/** Switch to iframe context */
+		private SwitchToIFrameContext(id: string): string {
+			if (id && id.length > 0)
+			{
+				let result = this.AddEnsureTest(id);
+				result += "%09%09browser.switchTo().frame(element(by.id('{0}')));%0A"
+				return this.formatString(result, id);
 			}
 		}
 	}

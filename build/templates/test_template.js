@@ -1,3 +1,3 @@
 it('SHOULD GET THE URL: %URL%', function() {
-	%TEST%
+	%0A%TEST%
 });

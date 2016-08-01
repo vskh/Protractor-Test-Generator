@@ -314,6 +314,7 @@ var ExtensionApp;
                 var _this = this;
                 var tests = "";
                 this.ChromeService.events.forEach(function (value, index) {
+                    tests += "%09%09";
                     if (value.type === 'load') {
                         // Replace with proper browser.get condition adding.
                         tests += _this.AddBrowserGetStep(value.url);
@@ -334,7 +335,10 @@ var ExtensionApp;
                         // Add ensure test
                         tests += _this.AddEnsureTest(value.id);
                     }
-                    tests = tests + "%0A%09";
+                    else if (value.type === 'iframesubload') {
+                        // Switch context to iframe
+                        tests += _this.SwitchToIFrameContext(value.id);
+                    }
                 });
                 return tests;
             };
@@ -384,33 +388,41 @@ var ExtensionApp;
             /** Browser get step */
             TemplateService.prototype.AddBrowserGetStep = function (url) {
                 /** Get url template */
-                return this.formatString("browser.get('{0}');", url);
+                return this.formatString("browser.get('{0}');%0A", url);
             };
             /** Click step */
             TemplateService.prototype.AddClickStep = function (id, css) {
                 if (id && id.length > 0) {
-                    return this.formatString("element(by.id('{0}')).click();", id);
+                    return this.formatString("element(by.id('{0}')).click();%0A", id);
                 }
                 else if (css && css.length > 0) {
-                    return this.formatString("element(by.css('{0}')).click();", css);
+                    return this.formatString("element(by.css('{0}')).click();%0A", css);
                 }
             };
             /** Add enter step */
             TemplateService.prototype.AddEnterStep = function (id) {
                 if (id && id.length > 0) {
-                    return this.formatString("element(by.id('{0}')).sendKeys(protractor.Key.ENTER);");
+                    return this.formatString("element(by.id('{0}')).sendKeys(protractor.Key.ENTER);%0A", id);
                 }
             };
             /** Type in step */
             TemplateService.prototype.AddTypeInStep = function (id, text) {
                 if (id && id.length > 0) {
-                    return this.formatString("element(by.id('{0}')).sendKeys('{1}');", id, text);
+                    return this.formatString("element(by.id('{0}')).sendKeys('{1}');%0A", id, text);
                 }
             };
             /** Add ensure test */
             TemplateService.prototype.AddEnsureTest = function (id) {
                 if (id && id.length > 0) {
-                    return this.formatString("expect(element(by.id('{0}')).isPresent()).toBeTruthy();");
+                    return this.formatString("expect(element(by.id('{0}')).isPresent()).toBeTruthy();%0A", id);
+                }
+            };
+            /** Switch to iframe context */
+            TemplateService.prototype.SwitchToIFrameContext = function (id) {
+                if (id && id.length > 0) {
+                    var result = this.AddEnsureTest(id);
+                    result += "%09%09browser.switchTo().frame(element(by.id('{0}')));%0A";
+                    return this.formatString(result, id);
                 }
             };
             /** Dependency injection */
