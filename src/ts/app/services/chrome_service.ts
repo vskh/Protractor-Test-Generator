@@ -11,9 +11,6 @@ module ExtensionApp.Services
 		/** If the service is initialized */
 		public isInitialized: boolean;
 
-		/** Key queue */
-		public keyQueue: {id: string, text: string}[] = [];
-
 		/** Chrome tab id */
 		public testingTabId: any;
 
@@ -43,7 +40,6 @@ module ExtensionApp.Services
 			this.testingTabId = undefined;
 			this.isInitialized = false;
 			this.events = [];
-			this.keyQueue = [];
 		}
 
 		/**
@@ -168,16 +164,11 @@ module ExtensionApp.Services
 		/** Add key event */
 		public AddKeyEvent(event: any): void
 		{
-			if (this.keyQueue.length === 0)
-			{
-				this.keyQueue.push({id: event.id, text: event.text});
-				this.events.push({id: event.id, text: event.text, name: event.name, className: event.className, type: 'key'});
-			}
-			else if (this.keyQueue[this.keyQueue.length - 1].id == event.id)
+			if (this.events[this.events.length - 1].id == event.id)
 			{
 				this.events.pop();
-				this.events.push({id: event.id, text: event.text, name: event.name, className: event.className, type: 'key'});
 			}
+			this.events.push({id: event.id, text: event.text, name: event.name, className: event.className, type: 'key'});
 		}
 
 		/** Add Enter key event. */
