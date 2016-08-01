@@ -230,7 +230,7 @@ var ExtensionApp;
             };
             /** Add click event */
             ChromeService.prototype.AddClickEvent = function (event) {
-                this.events.push({ id: event.id, type: 'click' });
+                this.events.push({ id: event.id, name: event.name, className: event.className, type: 'click' });
             };
             /** Add ensure event */
             ChromeService.prototype.AddEnsureEvent = function (event) {

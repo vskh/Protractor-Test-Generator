@@ -12,7 +12,7 @@ document.addEventListener("mousedown", function (event) {
 		chrome.runtime.sendMessage({
 			from: 'content',
 			subject: 'click',
-			info: {id: event.target.id, class:event.target.className}
+			info: {id: event.target.id, className:event.target.className}
 		});
 	}
 }, true);
@@ -58,7 +58,7 @@ document.addEventListener('focus', function (event) {
 		chrome.runtime.sendMessage({
 			from: 'content',
 			subject: 'focus',
-			info: {id: event.target.id, class:event.target.className}
+			info: {id: event.target.id, className:event.target.className}
 		})
 	}
 }, true);

@@ -156,7 +156,7 @@ module ExtensionApp.Services
 		/** Add click event */
 		public AddClickEvent(event: any)
 		{
-			this.events.push({id: event.id, type: 'click'});
+			this.events.push({id: event.id, name: event.name, className: event.className, type: 'click'});
 		}
 
 		/** Add ensure event */
