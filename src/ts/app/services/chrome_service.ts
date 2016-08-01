@@ -20,8 +20,6 @@ module ExtensionApp.Services
 		/** Dependency injection. */
 		static $inject = ['$rootScope', 'chrome'];
 
-		public frameStack = {};
-
 		/**
 		 * Constructor for the chrome service.
 		 * @param $rootScope Scope
@@ -125,6 +123,7 @@ module ExtensionApp.Services
 			this.events.push(event);
 		}
 
+		/** Add IFrame subload event */
 		public AddIFrameSub(event: any)
 		{
 			this.events.push({id: event.id, type: 'iframesubload', url: event.url})

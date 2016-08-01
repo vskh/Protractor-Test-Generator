@@ -139,9 +139,6 @@ var ExtensionApp;
                 this.chrome = chrome;
                 /** Events array */
                 this.events = [];
-                /** Key queue */
-                this.keyQueue = [];
-                this.frameStack = {};
                 this.isInitialized = false;
             }
             /**
@@ -151,7 +148,6 @@ var ExtensionApp;
                 this.testingTabId = undefined;
                 this.isInitialized = false;
                 this.events = [];
-                this.keyQueue = [];
             };
             /**
              * Ensure that we're only looking to the same tab
@@ -211,6 +207,7 @@ var ExtensionApp;
             ChromeService.prototype.AddEvent = function (event) {
                 this.events.push(event);
             };
+            /** Add IFrame subload event */
             ChromeService.prototype.AddIFrameSub = function (event) {
                 this.events.push({ id: event.id, type: 'iframesubload', url: event.url });
             };
