@@ -3,6 +3,7 @@
 /// <reference path="app/classes/_all.ts"/>
 /// <reference path="app/services/_all.ts"/>
 /// <reference path="app/controllers/_all.ts"/>
+/// <reference path="app/directives/_all.ts"/>
 
 module ExtensionApp
 {
