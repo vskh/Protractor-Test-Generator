@@ -8,16 +8,17 @@ module ExtensionApp.Controllers
 
 		/** Methods */
 		Back: any;
+		Download: any;
 	}
 	export class NavbarController
 	{
 		/** dependency injection */
-		static $inject = ['$scope', '$location'];
+		static $inject = ['$scope', '$location', 'TemplateService'];
 
 		/**
 		 * Constructor for the controller
 		 */
-		constructor(private $scope: INavbarScope, private $location: ng.ILocationService)
+		constructor(private $scope: INavbarScope, private $location: ng.ILocationService, private TemplateService: Services.TemplateService)
 		{
 			$scope.isActive = (viewLocation) =>
 			{ 
@@ -31,6 +32,11 @@ module ExtensionApp.Controllers
 			$scope.Back = () =>
 			{
 				window.history.back();
+			}
+
+			$scope.Download = () =>
+			{
+				this.TemplateService.DownloadFile('Recorded Test');
 			}
 		}
 	}

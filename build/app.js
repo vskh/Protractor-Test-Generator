@@ -576,9 +576,11 @@ var ExtensionApp;
             /**
              * Constructor for the controller
              */
-            function NavbarController($scope, $location) {
+            function NavbarController($scope, $location, TemplateService) {
+                var _this = this;
                 this.$scope = $scope;
                 this.$location = $location;
+                this.TemplateService = TemplateService;
                 $scope.isActive = function (viewLocation) {
                     if ($location.path().indexOf('demo') >= 0) {
                         return false;
@@ -588,9 +590,12 @@ var ExtensionApp;
                 $scope.Back = function () {
                     window.history.back();
                 };
+                $scope.Download = function () {
+                    _this.TemplateService.DownloadFile('Recorded Test');
+                };
             }
             /** dependency injection */
-            NavbarController.$inject = ['$scope', '$location'];
+            NavbarController.$inject = ['$scope', '$location', 'TemplateService'];
             return NavbarController;
         })();
         Controllers.NavbarController = NavbarController;
