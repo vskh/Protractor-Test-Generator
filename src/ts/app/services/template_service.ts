@@ -184,8 +184,9 @@ module ExtensionApp.Services
 		private SwitchToIFrameContext(id: string): string {
 			if (id && id.length > 0)
 			{
-				let result = this.AddEnsureTest(id);
-				result += "%09%09browser.switchTo().frame(element(by.id('{0}')));%0A"
+				let result = "browser.wait(protractor.ExpectedConditions.presenceOf(element(by.id('{0}'))), 2000);%0A";
+				result += "%09%09" + this.AddEnsureTest(id);
+				result += "%09%09" + "browser.switchTo().frame('{0}');%0A"
 				return this.formatString(result, id);
 			}
 		}

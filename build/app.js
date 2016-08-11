@@ -413,8 +413,9 @@ var ExtensionApp;
             /** Switch to iframe context */
             TemplateService.prototype.SwitchToIFrameContext = function (id) {
                 if (id && id.length > 0) {
-                    var result = this.AddEnsureTest(id);
-                    result += "%09%09browser.switchTo().frame(element(by.id('{0}')));%0A";
+                    var result = "browser.wait(protractor.ExpectedConditions.presenceOf(element(by.id('{0}'))), 2000);%0A";
+                    result += "%09%09" + this.AddEnsureTest(id);
+                    result += "%09%09" + "browser.switchTo().frame('{0}');%0A";
                     return this.formatString(result, id);
                 }
             };
