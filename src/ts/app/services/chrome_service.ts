@@ -85,27 +85,30 @@ module ExtensionApp.Services
 						/** Click event */
 						else if (msg.subject === 'click')
 						{
-							/** Comes from an internal frame that we haven't registered. Should be the deepest level. */
-							let index = CS.frameUrls.map(function(obj){return obj.key;}).indexOf(CS.ExtractDomain(msg.info.url));
-							if (index == -1)
+							if (CS.frameUrls.length != 0)
 							{
-								let currentFrame = CS.frameUrls[CS.frameUrls.length - 1].value; 
-								if (CS.currentFrame !== currentFrame)
+								/** Comes from an internal frame that we haven't registered. Should be the deepest level. */
+								let index = CS.frameUrls.map(function(obj){return obj.key;}).indexOf(CS.ExtractDomain(msg.info.url));
+								if (index == -1)
 								{
-									CS.currentFrame = currentFrame;
-									CS.AddIFrameSub({id: CS.currentFrame});
-								}
-							}
-							/** Comes from a frame that was registered. */
-							else //if (CS.frameUrls[CS.ExtractDomain(msg.info.url)])
-							{
-								if (index > 0)
-								{
-									let currentFrame = CS.frameUrls[index - 1].value;
+									let currentFrame = CS.frameUrls[CS.frameUrls.length - 1].value; 
 									if (CS.currentFrame !== currentFrame)
 									{
 										CS.currentFrame = currentFrame;
-										CS.AddIFrameSub({id:CS.currentFrame});
+										CS.AddIFrameSub({id: CS.currentFrame});
+									}
+								}
+								/** Comes from a frame that was registered. */
+								else //if (CS.frameUrls[CS.ExtractDomain(msg.info.url)])
+								{
+									if (index > 0)
+									{
+										let currentFrame = CS.frameUrls[index - 1].value;
+										if (CS.currentFrame !== currentFrame)
+										{
+											CS.currentFrame = currentFrame;
+											CS.AddIFrameSub({id:CS.currentFrame});
+										}
 									}
 								}
 							}

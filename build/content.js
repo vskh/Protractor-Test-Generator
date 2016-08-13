@@ -1,19 +1,60 @@
-document.addEventListener("mousedown", function (event) {
-	if (isExternalEvent(event) && event.button === 2)
-	{
-		chrome.runtime.sendMessage({
-			from: 'content',
-			subject: 'contextmenu',
-			info: {id: event.target.id, name: event.target.name, className: event.target.className}
-		});
+jQuery.fn.extend({
+	getPath: function () {
+		var path, node = this;
+		while (node.length) {
+			var realNode = node[0], name = realNode.localName;
+			if (!name) break;
+			name = name.toLowerCase();
+
+			var parent = node.parent();
+
+			var sameTagSiblings = parent.children(name);
+			if (sameTagSiblings.length > 1) { 
+				allSiblings = parent.children();
+				var index = allSiblings.index(realNode) + 1;
+				if (index > 1) {
+					name += ':nth-child(' + index + ')';
+				}
+			}
+
+			path = name + (path ? '>' + path : '');
+			node = parent;
+		}
+
+		return path;
 	}
-	else if (isExternalEvent(event) && event.button == 0)
+});
+
+document.addEventListener("mousedown", function (event) {
+	let path = $(event.target).getPath();
+
+	if (isExternalEvent(event))
 	{
-		chrome.runtime.sendMessage({
-			from: 'content',
-			subject: 'click',
-			info: {id: event.target.id, className:event.target.className, url:event.target.baseURI}
-		});
+		let messageInfo = {url: event.target.baseURI};
+		if (!event.target.id || event.target.id.length === 0)
+		{
+			messageInfo.path = $(event.target).getPath();
+		}
+		else
+		{
+			messageInfo.id = event.target.id;
+		}
+		if (event.button === 2)
+		{
+			chrome.runtime.sendMessage({
+				from: 'content',
+				subject: 'contextmenu',
+				info: messageInfo
+			});
+		}
+		else if (event.button === 0)
+		{
+			chrome.runtime.sendMessage({
+				from: 'content',
+				subject: 'click',
+				info: messageInfo
+			});
+		}
 	}
 }, true);
 var previousElement;

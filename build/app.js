@@ -178,21 +178,23 @@ var ExtensionApp;
                                 }
                             }
                             else if (msg.subject === 'click') {
-                                /** Comes from an internal frame that we haven't registered. Should be the deepest level. */
-                                var index = CS.frameUrls.map(function (obj) { return obj.key; }).indexOf(CS.ExtractDomain(msg.info.url));
-                                if (index == -1) {
-                                    var currentFrame = CS.frameUrls[CS.frameUrls.length - 1].value;
-                                    if (CS.currentFrame !== currentFrame) {
-                                        CS.currentFrame = currentFrame;
-                                        CS.AddIFrameSub({ id: CS.currentFrame });
-                                    }
-                                }
-                                else {
-                                    if (index > 0) {
-                                        var currentFrame = CS.frameUrls[index - 1].value;
+                                if (CS.frameUrls.length != 0) {
+                                    /** Comes from an internal frame that we haven't registered. Should be the deepest level. */
+                                    var index = CS.frameUrls.map(function (obj) { return obj.key; }).indexOf(CS.ExtractDomain(msg.info.url));
+                                    if (index == -1) {
+                                        var currentFrame = CS.frameUrls[CS.frameUrls.length - 1].value;
                                         if (CS.currentFrame !== currentFrame) {
                                             CS.currentFrame = currentFrame;
                                             CS.AddIFrameSub({ id: CS.currentFrame });
+                                        }
+                                    }
+                                    else {
+                                        if (index > 0) {
+                                            var currentFrame = CS.frameUrls[index - 1].value;
+                                            if (CS.currentFrame !== currentFrame) {
+                                                CS.currentFrame = currentFrame;
+                                                CS.AddIFrameSub({ id: CS.currentFrame });
+                                            }
                                         }
                                     }
                                 }
