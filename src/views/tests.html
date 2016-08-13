@@ -6,18 +6,14 @@
 			<span ng-if="event.id && event.id.length > 0">
 				<b>Typing:</b> <em>'{{event.text}}'</em> into input box with id: <em>'{{event.id}}'</em>
 			</span>
-			<span ng-if="!event.id && event.className"
-				><b>Typing:</b> <em>'{{event.text}}'</em> into input box with styling: <em>'{{event.className}}'</em>
-			</span>
-			<span ng-if="!event.id && !event.className && event.name">
-				<b>Typing:</b> <em>'{{event.text}}'</em> into input box with name: <em>'{{event.name}}'</em>
+			<span ng-if="!event.id && event.path">
+				<b>Typing:</b> <em>'{{event.text}}'</em> into input box with name with selector: <em>'{{event.path}}'</em>
 			</span>
 		</div>
 		<div class="" ng-if="event.type === 'click'" context-menu="vm.menuOptions" style="word-wrap:break-word;">
 			<span class="glyphicon glyphicon glyphicon-hand-up" aria-hidden="true"></span>
 			<span ng-if="event.id && event.id.length > 0"><b>Clicked:</b> to item with id <em>'{{event.id}}'</em></span>
-			<span ng-if="!event.id && event.className"><b>Clicked:</b> to item with style <em> '{{event.className}}'</em></span>
-			<span ng-if="!event.id && !event.className && event.name"><b>Clicked:</b> to item with name <em> '{{event.name}}'</em></span>
+			<span ng-if="!event.id && event.path"><b>Clicked:</b> to item with selector <em> '{{event.path}}'</em></span>
 		</div>
 		<div class="" ng-if="event.type === 'load'" context-menu="vm.menuOptions" style="word-wrap:break-word;">
 			<span class="glyphicon glyphicon glyphicon glyphicon-globe" aria-hidden="true"></span>

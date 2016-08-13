@@ -66,12 +66,12 @@ module ExtensionApp.Services
 				else if (value.type === 'click')
 				{
 					// Click step registry
-					tests += this.AddClickStep(value.id, value.css);
+					tests += this.AddClickStep(value.id, value.path);
 				}
 				else if (value.type === 'key')
 				{
 					// Key step registry
-					tests += this.AddTypeInStep(value.id, value.text);
+					tests += this.AddTypeInStep(value.id, value.path, value.text);
 				}
 				else if (value.type === 'enter')
 				{
@@ -145,14 +145,14 @@ module ExtensionApp.Services
 		}
 
 		/** Click step */
-		private AddClickStep(id: string, css: string) : string {
+		private AddClickStep(id: string, path: string) : string {
 			if (id && id.length > 0)
 			{
 				return this.formatString("element(by.id('{0}')).click();%0A", id);
 			}
-			else if (css && css.length > 0)
+			else if (path && path.length > 0)
 			{
-				return this.formatString("element(by.css('{0}')).click();%0A", css);
+				return this.formatString("element(by.css('{0}')).click();%0A", path);
 			}
 		}
 
@@ -165,10 +165,14 @@ module ExtensionApp.Services
 		}
 
 		/** Type in step */
-		private AddTypeInStep(id: string, text: string): string {
+		private AddTypeInStep(id: string, path: string, text: string): string {
 			if (id && id.length > 0)
 			{
 				return this.formatString("element(by.id('{0}')).sendKeys('{1}');%0A", id, text);
+			}
+			else if (path && path.length > 0)
+			{
+				return this.formatString("element(by.css('{0}')).sendKeys('{1}');%0A", path, text);
 			}
 		}
 

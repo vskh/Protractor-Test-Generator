@@ -188,20 +188,18 @@ var ExtensionApp;
                                             CS.AddIFrameSub({ id: CS.currentFrame });
                                         }
                                     }
-                                    else {
-                                        if (index > 0) {
-                                            var currentFrame = CS.frameUrls[index - 1].value;
-                                            if (CS.currentFrame !== currentFrame) {
-                                                CS.currentFrame = currentFrame;
-                                                CS.AddIFrameSub({ id: CS.currentFrame });
-                                            }
+                                    else if (index > 0) {
+                                        var currentFrame = CS.frameUrls[index - 1].value;
+                                        if (CS.currentFrame !== currentFrame) {
+                                            CS.currentFrame = currentFrame;
+                                            CS.AddIFrameSub({ id: CS.currentFrame });
                                         }
                                     }
                                 }
-                                CS.AddClickEvent({ id: msg.info.id, name: msg.info.name, className: msg.info.className, url: msg.info.url });
+                                CS.AddClickEvent(msg.info);
                             }
                             else if (msg.subject === 'text') {
-                                CS.AddKeyEvent({ id: msg.info.id, text: msg.info.text, name: msg.info.name, className: msg.info.className });
+                                CS.AddKeyEvent(msg.info);
                             }
                             else if (msg.subject === 'enter') {
                                 CS.AddEnterEvent({ id: msg.info.id });
@@ -251,7 +249,7 @@ var ExtensionApp;
             };
             /** Add click event */
             ChromeService.prototype.AddClickEvent = function (event) {
-                this.events.push({ id: event.id, name: event.name, className: event.className, type: 'click' });
+                this.events.push({ id: event.id, path: event.path, type: 'click' });
             };
             /** Add ensure event */
             ChromeService.prototype.AddEnsureEvent = function (event) {
@@ -262,7 +260,7 @@ var ExtensionApp;
                 if (this.events[this.events.length - 1].id == event.id) {
                     this.events.pop();
                 }
-                this.events.push({ id: event.id, text: event.text, name: event.name, className: event.className, type: 'key' });
+                this.events.push({ id: event.id, text: event.text, path: event.path, className: event.className, type: 'key' });
             };
             /** Add Enter key event. */
             ChromeService.prototype.AddEnterEvent = function (event) {
@@ -351,11 +349,11 @@ var ExtensionApp;
                     }
                     else if (value.type === 'click') {
                         // Click step registry
-                        tests += _this.AddClickStep(value.id, value.css);
+                        tests += _this.AddClickStep(value.id, value.path);
                     }
                     else if (value.type === 'key') {
                         // Key step registry
-                        tests += _this.AddTypeInStep(value.id, value.text);
+                        tests += _this.AddTypeInStep(value.id, value.path, value.text);
                     }
                     else if (value.type === 'enter') {
                         // Enter step registry
@@ -421,12 +419,12 @@ var ExtensionApp;
                 return this.formatString("browser.get('{0}');%0A", url);
             };
             /** Click step */
-            TemplateService.prototype.AddClickStep = function (id, css) {
+            TemplateService.prototype.AddClickStep = function (id, path) {
                 if (id && id.length > 0) {
                     return this.formatString("element(by.id('{0}')).click();%0A", id);
                 }
-                else if (css && css.length > 0) {
-                    return this.formatString("element(by.css('{0}')).click();%0A", css);
+                else if (path && path.length > 0) {
+                    return this.formatString("element(by.css('{0}')).click();%0A", path);
                 }
             };
             /** Add enter step */
@@ -436,9 +434,12 @@ var ExtensionApp;
                 }
             };
             /** Type in step */
-            TemplateService.prototype.AddTypeInStep = function (id, text) {
+            TemplateService.prototype.AddTypeInStep = function (id, path, text) {
                 if (id && id.length > 0) {
                     return this.formatString("element(by.id('{0}')).sendKeys('{1}');%0A", id, text);
+                }
+                else if (path && path.length > 0) {
+                    return this.formatString("element(by.css('{0}')).sendKeys('{1}');%0A", path, text);
                 }
             };
             /** Add ensure test */

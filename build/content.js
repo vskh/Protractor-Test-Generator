@@ -26,19 +26,9 @@ jQuery.fn.extend({
 });
 
 document.addEventListener("mousedown", function (event) {
-	let path = $(event.target).getPath();
-
 	if (isExternalEvent(event))
 	{
-		let messageInfo = {url: event.target.baseURI};
-		if (!event.target.id || event.target.id.length === 0)
-		{
-			messageInfo.path = $(event.target).getPath();
-		}
-		else
-		{
-			messageInfo.id = event.target.id;
-		}
+		let messageInfo = craftMessageInfo(event);
 		if (event.button === 2)
 		{
 			chrome.runtime.sendMessage({
@@ -120,20 +110,22 @@ document.addEventListener('focus', function (event) {
 document.addEventListener('keyup', function(event) {
 	if (isExternalEvent(event))
 	{
+		let messageInfo = craftMessageInfo(event);
 		if (event.key === 'Enter')
 		{
 			chrome.runtime.sendMessage({
 				from: 'content',
 				subject: 'enter',
-				info: {id: event.target.id, name: event.target.name, className: event.target.className}
+				info: messageInfo
 			});
 		}
 		else if (event.target.value)
 		{
+			messageInfo.text = event.target.value;
 			chrome.runtime.sendMessage({
 				from: 'content',
 				subject: 'text',
-				info: {id: event.target.id, text: event.target.value, name: event.target.name, className: event.target.className}
+				info: messageInfo
 			});
 		}
 	}
@@ -142,4 +134,18 @@ document.addEventListener('keyup', function(event) {
 function isExternalEvent(event)
 {
 	return event.target.baseURI.indexOf('chrome-extension') < 0;
+}
+
+function craftMessageInfo(event)
+{
+	let messageInfo = {url: event.target.baseURI};
+	if (!event.target.id || event.target.id.length === 0)
+	{
+		messageInfo.path = $(event.target).getPath();
+	}
+	else
+	{
+		messageInfo.id = event.target.id;
+	}
+	return messageInfo;
 }

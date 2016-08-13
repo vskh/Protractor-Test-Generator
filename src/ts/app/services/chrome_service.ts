@@ -99,26 +99,23 @@ module ExtensionApp.Services
 									}
 								}
 								/** Comes from a frame that was registered. */
-								else //if (CS.frameUrls[CS.ExtractDomain(msg.info.url)])
+								else if (index > 0)
 								{
-									if (index > 0)
+									let currentFrame = CS.frameUrls[index - 1].value;
+									if (CS.currentFrame !== currentFrame)
 									{
-										let currentFrame = CS.frameUrls[index - 1].value;
-										if (CS.currentFrame !== currentFrame)
-										{
-											CS.currentFrame = currentFrame;
-											CS.AddIFrameSub({id:CS.currentFrame});
-										}
+										CS.currentFrame = currentFrame;
+										CS.AddIFrameSub({id:CS.currentFrame});
 									}
 								}
 							}
 
-							CS.AddClickEvent({id: msg.info.id, name: msg.info.name, className: msg.info.className, url: msg.info.url});
+							CS.AddClickEvent(msg.info);
 						}
 						/** Key up event */
 						else if (msg.subject === 'text')
 						{
-							CS.AddKeyEvent({id: msg.info.id, text: msg.info.text, name: msg.info.name, className: msg.info.className});
+							CS.AddKeyEvent(msg.info);
 						}
 						/** Enter event */
 						else if (msg.subject === 'enter')
@@ -187,7 +184,7 @@ module ExtensionApp.Services
 		/** Add click event */
 		public AddClickEvent(event: any)
 		{
-			this.events.push({id: event.id, name: event.name, className: event.className, type: 'click'});
+			this.events.push({id: event.id, path: event.path, type: 'click'});
 		}
 
 		/** Add ensure event */
@@ -203,7 +200,7 @@ module ExtensionApp.Services
 			{
 				this.events.pop();
 			}
-			this.events.push({id: event.id, text: event.text, name: event.name, className: event.className, type: 'key'});
+			this.events.push({id: event.id, text: event.text, path: event.path, className: event.className, type: 'key'});
 		}
 
 		/** Add Enter key event. */
