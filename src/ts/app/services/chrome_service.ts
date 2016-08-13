@@ -17,6 +17,12 @@ module ExtensionApp.Services
 		/** Last load event index */
 		private lastLoadEventIndex: number;
 
+		/** Current frame */
+		private frameUrls: Array<{key: string, value: string}> = [];
+
+		/** Current active frame */
+		private currentFrame: any;
+
 		/** Dependency injection. */
 		static $inject = ['$rootScope', 'chrome'];
 
@@ -79,7 +85,32 @@ module ExtensionApp.Services
 						/** Click event */
 						else if (msg.subject === 'click')
 						{
-							CS.AddClickEvent({id: msg.info.id, name: msg.info.name, className: msg.info.className});
+							/** Comes from an internal frame that we haven't registered. Should be the deepest level. */
+							let index = CS.frameUrls.map(function(obj){return obj.key;}).indexOf(CS.ExtractDomain(msg.info.url));
+							if (index == -1)
+							{
+								let currentFrame = CS.frameUrls[CS.frameUrls.length - 1].value; 
+								if (CS.currentFrame !== currentFrame)
+								{
+									CS.currentFrame = currentFrame;
+									CS.AddIFrameSub({id: CS.currentFrame});
+								}
+							}
+							/** Comes from a frame that was registered. */
+							else //if (CS.frameUrls[CS.ExtractDomain(msg.info.url)])
+							{
+								if (index > 0)
+								{
+									let currentFrame = CS.frameUrls[index - 1].value;
+									if (CS.currentFrame !== currentFrame)
+									{
+										CS.currentFrame = currentFrame;
+										CS.AddIFrameSub({id:CS.currentFrame});
+									}
+								}
+							}
+
+							CS.AddClickEvent({id: msg.info.id, name: msg.info.name, className: msg.info.className, url: msg.info.url});
 						}
 						/** Key up event */
 						else if (msg.subject === 'text')
@@ -93,6 +124,8 @@ module ExtensionApp.Services
 						}
 						else if (msg.subject === 'iframesubload')
 						{
+							CS.currentFrame = msg.info.id;
+							CS.frameUrls.push({key: CS.ExtractDomain(msg.info.url), value:msg.info.id});
 							CS.AddIFrameSub({id: msg.info.id, url: msg.info.url});
 						}
 					}
@@ -185,6 +218,23 @@ module ExtensionApp.Services
 			}
 
 			this.events.splice(index, 1);
+		}
+
+		private ExtractDomain(url: string): string
+		{
+			var domain;
+			//find & remove protocol (http, ftp, etc.) and get domain
+			if (url.indexOf("://") > -1) {
+				domain = url.split('/')[2];
+			}
+			else {
+				domain = url.split('/')[0];
+			}
+
+			//find & remove port number
+			domain = domain.split(':')[0];
+
+			return domain;
 		}
 	}
 }

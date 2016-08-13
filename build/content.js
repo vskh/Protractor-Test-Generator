@@ -12,7 +12,7 @@ document.addEventListener("mousedown", function (event) {
 		chrome.runtime.sendMessage({
 			from: 'content',
 			subject: 'click',
-			info: {id: event.target.id, className:event.target.className}
+			info: {id: event.target.id, className:event.target.className, url:event.target.baseURI}
 		});
 	}
 }, true);
@@ -25,13 +25,30 @@ document.addEventListener('DOMSubtreeModified', function(event) {
 			if(elem && elem.tagName == 'IFRAME')
 			{
 				// Context is changed.
+				/*chrome.storage.local.get('frame', function(result)
+				{
+					if (!result.frame || result.frame != elem.id)
+					{
+						chrome.storage.local.set({'frame': elem.id}, function(){
+							chrome.runtime.sendMessage({
+								from: 'content',
+								subject: 'iframesubload',
+								info: {type: 'iframesubload', url: event.target.URL, id: elem.id}
+							});
+						});
+					}
+				});*/
+				/*chrome.storage.local.set({'frame': previousElement}, function() {
+					// Notify that we saved.
+					message('Settings saved');
+				});*/
 				if (!previousElement || previousElement != elem.id)
 				{
 					previousElement = elem.id;
 					chrome.runtime.sendMessage({
 						from: 'content',
 						subject: 'iframesubload',
-						info: {type: 'iframesubload', url: event.target.URL, id: elem.id}
+						info: {type: 'iframesubload', url: event.target.baseURI, id: elem.id}
 					});
 				}
 			}

@@ -139,6 +139,8 @@ var ExtensionApp;
                 this.chrome = chrome;
                 /** Events array */
                 this.events = [];
+                /** Current frame */
+                this.frameUrls = [];
                 this.isInitialized = false;
             }
             /**
@@ -176,7 +178,25 @@ var ExtensionApp;
                                 }
                             }
                             else if (msg.subject === 'click') {
-                                CS.AddClickEvent({ id: msg.info.id, name: msg.info.name, className: msg.info.className });
+                                /** Comes from an internal frame that we haven't registered. Should be the deepest level. */
+                                var index = CS.frameUrls.map(function (obj) { return obj.key; }).indexOf(CS.ExtractDomain(msg.info.url));
+                                if (index == -1) {
+                                    var currentFrame = CS.frameUrls[CS.frameUrls.length - 1].value;
+                                    if (CS.currentFrame !== currentFrame) {
+                                        CS.currentFrame = currentFrame;
+                                        CS.AddIFrameSub({ id: CS.currentFrame });
+                                    }
+                                }
+                                else {
+                                    if (index > 0) {
+                                        var currentFrame = CS.frameUrls[index - 1].value;
+                                        if (CS.currentFrame !== currentFrame) {
+                                            CS.currentFrame = currentFrame;
+                                            CS.AddIFrameSub({ id: CS.currentFrame });
+                                        }
+                                    }
+                                }
+                                CS.AddClickEvent({ id: msg.info.id, name: msg.info.name, className: msg.info.className, url: msg.info.url });
                             }
                             else if (msg.subject === 'text') {
                                 CS.AddKeyEvent({ id: msg.info.id, text: msg.info.text, name: msg.info.name, className: msg.info.className });
@@ -185,6 +205,8 @@ var ExtensionApp;
                                 CS.AddEnterEvent({ id: msg.info.id });
                             }
                             else if (msg.subject === 'iframesubload') {
+                                CS.currentFrame = msg.info.id;
+                                CS.frameUrls.push({ key: CS.ExtractDomain(msg.info.url), value: msg.info.id });
                                 CS.AddIFrameSub({ id: msg.info.id, url: msg.info.url });
                             }
                         }
@@ -250,6 +272,19 @@ var ExtensionApp;
                     return;
                 }
                 this.events.splice(index, 1);
+            };
+            ChromeService.prototype.ExtractDomain = function (url) {
+                var domain;
+                //find & remove protocol (http, ftp, etc.) and get domain
+                if (url.indexOf("://") > -1) {
+                    domain = url.split('/')[2];
+                }
+                else {
+                    domain = url.split('/')[0];
+                }
+                //find & remove port number
+                domain = domain.split(':')[0];
+                return domain;
             };
             /** Dependency injection. */
             ChromeService.$inject = ['$rootScope', 'chrome'];
