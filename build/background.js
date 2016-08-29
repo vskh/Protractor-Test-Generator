@@ -13,16 +13,18 @@ chrome.browserAction.onClicked.addListener(function () {
 chrome.runtime.onMessage.addListener(function (request, sender){
     if (request.from === 'content' && request.subject === 'contextmenu')
     {
+        var selector = request.info.id ? request.info.id : request.info.path;
+
         if (contextMenuCreated)
         {
             chrome.contextMenus.update("ensureContext",
                 {
-                    title: "Ensure existence of element with id: '" + request.info.id + "'",
+                    title: "Ensure existence of element with selector: '" + selector + "'",
                     onclick: function(){
                         chrome.runtime.sendMessage({
                             from: 'background',
                             subject: 'ensure',
-                            info: {id: request.info.id}
+                            info: request.info
                         })}
                 });
         }
@@ -30,13 +32,13 @@ chrome.runtime.onMessage.addListener(function (request, sender){
         {
             chrome.contextMenus.create({
                 id: "ensureContext",
-                title: "Ensure existence of element with id: '" + request.info.id + "'", 
+                title: "Ensure existence of element with selector: '" + selector + "'", 
                 contexts:["all"], 
                 onclick: function(){
                     chrome.runtime.sendMessage({
                         from: 'background',
                         subject: 'ensure',
-                        info: {id: request.info.id}
+                        info: request.info
                     });
                 },
             });

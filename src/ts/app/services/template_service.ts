@@ -81,7 +81,7 @@ module ExtensionApp.Services
 				else if (value.type === 'ensure')
 				{
 					// Add ensure test
-					tests += this.AddEnsureTest(value.id);
+					tests += this.AddEnsureTest(value.id, value.path);
 				}
 				else if (value.type === 'iframesubload')
 				{
@@ -177,10 +177,14 @@ module ExtensionApp.Services
 		}
 
 		/** Add ensure test */
-		private AddEnsureTest(id: string): string {
+		private AddEnsureTest(id: string, path: string): string {
 			if (id && id.length > 0)
 			{
 				return this.formatString("expect(element(by.id('{0}')).isPresent()).toBeTruthy();%0A", id);
+			}
+			else if(path && path.length > 0)
+			{
+				return this.formatString("expect(element(by.css('{0}')).isPresent()).toBeTruthy();%0A", path);
 			}
 		}
 
@@ -189,7 +193,7 @@ module ExtensionApp.Services
 			if (id && id.length > 0)
 			{
 				let result = "browser.wait(protractor.ExpectedConditions.presenceOf(element(by.id('{0}'))), 2000);%0A";
-				result += "%09%09" + this.AddEnsureTest(id);
+				result += "%09%09" + this.AddEnsureTest(id, undefined);
 				result += "%09%09" + "browser.switchTo().frame('{0}');%0A"
 				return this.formatString(result, id);
 			}

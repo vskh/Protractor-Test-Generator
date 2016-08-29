@@ -25,7 +25,12 @@
 		</div>
 		<div class="" ng-if="event.type === 'ensure'" style="word-wrap:break-word;">
 			<span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
-			<b>Ensure existence</b> of element with id: <em>'{{event.id}}'</em>
+			<span ng-if="event.id && event.id.length > 0">
+				<b>Ensure existence</b> of element with id: <em>'{{event.id}}'</em>
+			</span>
+			<span ng-if="event.path && event.path.length > 0">
+				<b>Ensure existence</b> of element with selector: <em>'{{event.path}}'</em>
+			</span>
 		</div>
 		<div class="" ng-if="event.type === 'iframesubload'" style="word-wrap:break-word;">
 			<span class="glyphicon glyphicon-asterisk" aria-hidden="true"></span>

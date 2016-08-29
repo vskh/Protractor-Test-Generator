@@ -97,16 +97,6 @@ document.addEventListener('DOMContentLoaded', function (event) {
 		});
 	}
 }, true);
-document.addEventListener('focus', function (event) {
-	if (isExternalEvent(event))
-	{
-		chrome.runtime.sendMessage({
-			from: 'content',
-			subject: 'focus',
-			info: {id: event.target.id, className:event.target.className}
-		})
-	}
-}, true);
 document.addEventListener('keyup', function(event) {
 	if (isExternalEvent(event))
 	{
@@ -131,11 +121,6 @@ document.addEventListener('keyup', function(event) {
 	}
 }, true);
 
-function isExternalEvent(event)
-{
-	return event.target.baseURI.indexOf('chrome-extension') < 0;
-}
-
 function craftMessageInfo(event)
 {
 	let messageInfo = {url: event.target.baseURI};
@@ -148,4 +133,9 @@ function craftMessageInfo(event)
 		messageInfo.id = event.target.id;
 	}
 	return messageInfo;
+}
+
+function isExternalEvent(event)
+{
+	return event.target.baseURI.indexOf('chrome-extension') < 0;
 }

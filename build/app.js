@@ -214,7 +214,7 @@ var ExtensionApp;
                     else if (msg.from === 'background') {
                         /** Ensure event */
                         if (msg.subject === 'ensure') {
-                            CS.AddEnsureEvent({ id: msg.info.id });
+                            CS.AddEnsureEvent({ id: msg.info.id, path: msg.info.path });
                         }
                         /**  */
                         if (msg.subject) {
@@ -253,7 +253,7 @@ var ExtensionApp;
             };
             /** Add ensure event */
             ChromeService.prototype.AddEnsureEvent = function (event) {
-                this.events.push({ id: event.id, type: 'ensure', testtype: 'ensure' });
+                this.events.push({ id: event.id, path: event.path, type: 'ensure', testtype: 'ensure' });
             };
             /** Add key event */
             ChromeService.prototype.AddKeyEvent = function (event) {
@@ -361,7 +361,7 @@ var ExtensionApp;
                     }
                     else if (value.type === 'ensure') {
                         // Add ensure test
-                        tests += _this.AddEnsureTest(value.id);
+                        tests += _this.AddEnsureTest(value.id, value.path);
                     }
                     else if (value.type === 'iframesubload') {
                         // Switch context to iframe
@@ -443,16 +443,19 @@ var ExtensionApp;
                 }
             };
             /** Add ensure test */
-            TemplateService.prototype.AddEnsureTest = function (id) {
+            TemplateService.prototype.AddEnsureTest = function (id, path) {
                 if (id && id.length > 0) {
                     return this.formatString("expect(element(by.id('{0}')).isPresent()).toBeTruthy();%0A", id);
+                }
+                else if (path && path.length > 0) {
+                    return this.formatString("expect(element(by.css('{0}')).isPresent()).toBeTruthy();%0A", path);
                 }
             };
             /** Switch to iframe context */
             TemplateService.prototype.SwitchToIFrameContext = function (id) {
                 if (id && id.length > 0) {
                     var result = "browser.wait(protractor.ExpectedConditions.presenceOf(element(by.id('{0}'))), 2000);%0A";
-                    result += "%09%09" + this.AddEnsureTest(id);
+                    result += "%09%09" + this.AddEnsureTest(id, undefined);
                     result += "%09%09" + "browser.switchTo().frame('{0}');%0A";
                     return this.formatString(result, id);
                 }
