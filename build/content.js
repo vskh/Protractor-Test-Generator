@@ -55,24 +55,6 @@ document.addEventListener('DOMSubtreeModified', function(event) {
 			var elem = document.activeElement;
 			if(elem && elem.tagName == 'IFRAME')
 			{
-				// Context is changed.
-				/*chrome.storage.local.get('frame', function(result)
-				{
-					if (!result.frame || result.frame != elem.id)
-					{
-						chrome.storage.local.set({'frame': elem.id}, function(){
-							chrome.runtime.sendMessage({
-								from: 'content',
-								subject: 'iframesubload',
-								info: {type: 'iframesubload', url: event.target.URL, id: elem.id}
-							});
-						});
-					}
-				});*/
-				/*chrome.storage.local.set({'frame': previousElement}, function() {
-					// Notify that we saved.
-					message('Settings saved');
-				});*/
 				if (!previousElement || previousElement != elem.id)
 				{
 					previousElement = elem.id;
