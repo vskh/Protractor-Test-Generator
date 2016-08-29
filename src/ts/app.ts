@@ -30,12 +30,6 @@ module ExtensionApp
 				templateUrl: 'views/preferences.html',
 				controller: ExtensionApp.Controllers.PreferencesController,
 				controllerAs: 'vm'
-			})
-			.when('/save',
-			{
-				templateUrl: 'views/save.html',
-				controller: ExtensionApp.Controllers.SaveController,
-				controllerAs: 'vm'
 			}).
 			otherwise({
 				redirectTo: '/setup'

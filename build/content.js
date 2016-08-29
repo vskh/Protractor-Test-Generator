@@ -28,7 +28,7 @@ jQuery.fn.extend({
 document.addEventListener("mousedown", function (event) {
 	if (isExternalEvent(event))
 	{
-		let messageInfo = craftMessageInfo(event);
+		var messageInfo = craftMessageInfo(event);
 		if (event.button === 2)
 		{
 			chrome.runtime.sendMessage({
@@ -100,7 +100,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 document.addEventListener('keyup', function(event) {
 	if (isExternalEvent(event))
 	{
-		let messageInfo = craftMessageInfo(event);
+		var messageInfo = craftMessageInfo(event);
 		if (event.key === 'Enter')
 		{
 			chrome.runtime.sendMessage({
@@ -123,7 +123,7 @@ document.addEventListener('keyup', function(event) {
 
 function craftMessageInfo(event)
 {
-	let messageInfo = {url: event.target.baseURI};
+	var messageInfo = {url: event.target.baseURI};
 	if (!event.target.id || event.target.id.length === 0)
 	{
 		messageInfo.path = $(event.target).getPath();
