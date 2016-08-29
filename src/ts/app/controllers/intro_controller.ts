@@ -91,5 +91,11 @@ module ExtensionApp.Controllers
 			this.ChromeService.ClearAll();
 			this.InitializeEventHandlers();
 		}
+
+		/** Download the tests */
+		Download()
+		{
+			this.TemplateService.DownloadFile('Recorded Tests');
+		}
 	}
 }

@@ -548,6 +548,10 @@ var ExtensionApp;
                 this.ChromeService.ClearAll();
                 this.InitializeEventHandlers();
             };
+            /** Download the tests */
+            IntroController.prototype.Download = function () {
+                this.TemplateService.DownloadFile('Recorded Tests');
+            };
             /**
              * Dependency injection.
              */
@@ -664,37 +668,10 @@ var ExtensionApp;
         Controllers.PreferencesController = PreferencesController;
     })(Controllers = ExtensionApp.Controllers || (ExtensionApp.Controllers = {}));
 })(ExtensionApp || (ExtensionApp = {}));
-var ExtensionApp;
-(function (ExtensionApp) {
-    var Controllers;
-    (function (Controllers) {
-        /** Save controller */
-        var SaveController = (function () {
-            /**
-             * Constructor for save controller
-             * @param TemplateService Template Service for accessing templates and saving files.
-             */
-            function SaveController(TemplateService) {
-                this.TemplateService = TemplateService;
-            }
-            /**
-             * Download the test file
-             */
-            SaveController.prototype.Download = function () {
-                this.TemplateService.DownloadFile(this.testName && this.testName.length > 0 ? this.testName : 'Recorded Test');
-            };
-            /** Dependency injection */
-            SaveController.$inject = ['TemplateService'];
-            return SaveController;
-        })();
-        Controllers.SaveController = SaveController;
-    })(Controllers = ExtensionApp.Controllers || (ExtensionApp.Controllers = {}));
-})(ExtensionApp || (ExtensionApp = {}));
 /// <reference path="intro_controller.ts"/>
 /// <reference path="events_controller.ts"/>
 /// <reference path="navbar_controller.ts"/>
 /// <reference path="preferences_controller.ts"/>
-/// <reference path="save_controller.ts"/>
 var ExtensionApp;
 (function (ExtensionApp) {
     var Controllers;
@@ -704,7 +681,6 @@ var ExtensionApp;
         angular.module('ExtensionApp.Controllers').controller('EventsController', Controllers.EventsController);
         angular.module('ExtensionApp.Controllers').controller('NavbarController', Controllers.NavbarController);
         angular.module('ExtensionApp.Controllers').controller('PreferencesController', Controllers.PreferencesController);
-        angular.module('ExtensionApp.Controllers').controller('SaveController', Controllers.SaveController);
     })(Controllers = ExtensionApp.Controllers || (ExtensionApp.Controllers = {}));
 })(ExtensionApp || (ExtensionApp = {}));
 /// <reference path="../../typings/angularjs/angular.d.ts" />
