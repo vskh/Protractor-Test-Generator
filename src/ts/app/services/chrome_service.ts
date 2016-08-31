@@ -120,7 +120,7 @@ module ExtensionApp.Services
 						/** Enter event */
 						else if (msg.subject === 'enter')
 						{
-							CS.AddEnterEvent({id: msg.info.id});
+							CS.AddEnterEvent(msg.info);
 						}
 						else if (msg.subject === 'iframesubload')
 						{
@@ -206,7 +206,7 @@ module ExtensionApp.Services
 		/** Add Enter key event. */
 		public AddEnterEvent(event: any): void
 		{
-			this.events.push({id: event.id, type: 'enter'});
+			this.events.push({id: event.id, path: event.path, type: 'enter'});
 		}
 
 		/** Remove event */

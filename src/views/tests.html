@@ -21,7 +21,12 @@
 		</div>
 		<div class="" ng-if="event.type === 'enter'" context-menu="vm.menuOptions" style="word-wrap:break-word;">
 			<span class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span>
-			<b>Pressed enter on:</b> item with id <em>'{{event.id}}'</em>
+			<span ng-if="event.id && event.id.length > 0">
+				<b>Pressed enter on:</b> item with id <em>'{{event.id}}'</em>
+			</span>
+			<span ng-if="event.path && event.path.length > 0">
+				<b>Pressed enter on:</b> item with selector <em>'{{event.path}}'</em>
+			</span>
 		</div>
 		<div class="" ng-if="event.type === 'ensure'" style="word-wrap:break-word;">
 			<span class="glyphicon glyphicon-ok" aria-hidden="true"></span>

@@ -202,7 +202,7 @@ var ExtensionApp;
                                 CS.AddKeyEvent(msg.info);
                             }
                             else if (msg.subject === 'enter') {
-                                CS.AddEnterEvent({ id: msg.info.id });
+                                CS.AddEnterEvent(msg.info);
                             }
                             else if (msg.subject === 'iframesubload') {
                                 CS.currentFrame = msg.info.id;
@@ -264,7 +264,7 @@ var ExtensionApp;
             };
             /** Add Enter key event. */
             ChromeService.prototype.AddEnterEvent = function (event) {
-                this.events.push({ id: event.id, type: 'enter' });
+                this.events.push({ id: event.id, path: event.path, type: 'enter' });
             };
             /** Remove event */
             ChromeService.prototype.RemoveEvent = function (index) {
