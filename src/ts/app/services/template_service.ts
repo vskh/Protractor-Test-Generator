@@ -56,9 +56,19 @@ module ExtensionApp.Services
 		/** Compose the steps */
 		private ComposeSteps(): string	{
 			var tests: string = "";
+			var currentIndent = 1;
 			this.ChromeService.events.forEach((value: any, index: number) => {
 				tests += "%09%09";
-				if (value.type === 'load')
+				/*if (currentIndent != value.indent)
+				{
+
+				}*/
+				if(value.testtype === 'test' && value.type === 'load')
+				{
+					// Verify if the url is changing.
+					tests += this.AddUrlChangeTest(value.url);
+				}
+				else if (value.type === 'load')
 				{
 					// Replace with proper browser.get condition adding.
 					tests += this.AddBrowserGetStep(value.url);
@@ -197,6 +207,11 @@ module ExtensionApp.Services
 				result += "%09%09" + "browser.switchTo().frame('{0}');%0A"
 				return this.formatString(result, id);
 			}
+		}
+
+		/** Add url change test */
+		private AddUrlChangeTest(url: string): string {
+			return this.formatString("browser.wait(urlChanged('{0}'), 5000)", url);
 		}
 	}
 }

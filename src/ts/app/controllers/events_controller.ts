@@ -15,21 +15,22 @@ module ExtensionApp.Controllers
 		 */
 		menuOptions: Array<any> = 
 		[
-			['Mark as Setup', function ($itemScope) {
+			/*['Mark as Setup', function ($itemScope) {
 				$itemScope.event.testtype = 'setup';
-			}, [
+			}/*, [
 				['Mark as Setup and Edit', function($itemScope) {
 					$itemScope.event.testtype = 'setup';
-				}]]],null,
+				}]]
+			],null,*/
 			['Mark as Step', function($itemScope) {
 				$itemScope.event.testtype = 'step';
 			}], null,
 			['Mark as Test', function ($itemScope) {
 				$itemScope.event.testtype = 'test';
-			}],null,
+			}]/*,null,
 			['Mark as Result', function($itemScope) {
 				$itemScope.event.testtype = 'result';
-			}]
+			}]*/
 		];
 
 		/**

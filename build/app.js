@@ -341,9 +341,18 @@ var ExtensionApp;
             TemplateService.prototype.ComposeSteps = function () {
                 var _this = this;
                 var tests = "";
+                var currentIndent = 1;
                 this.ChromeService.events.forEach(function (value, index) {
                     tests += "%09%09";
-                    if (value.type === 'load') {
+                    /*if (currentIndent != value.indent)
+                    {
+    
+                    }*/
+                    if (value.testtype === 'test' && value.type === 'load') {
+                        // Verify if the url is changing.
+                        tests += _this.AddUrlChangeTest(value.url);
+                    }
+                    else if (value.type === 'load') {
                         // Replace with proper browser.get condition adding.
                         tests += _this.AddBrowserGetStep(value.url);
                     }
@@ -459,6 +468,10 @@ var ExtensionApp;
                     result += "%09%09" + "browser.switchTo().frame('{0}');%0A";
                     return this.formatString(result, id);
                 }
+            };
+            /** Add url change test */
+            TemplateService.prototype.AddUrlChangeTest = function (url) {
+                return this.formatString("browser.wait(urlChanged('{0}'), 5000)", url);
             };
             /** Dependency injection */
             TemplateService.$inject = ['chrome', 'ChromeService'];
@@ -579,21 +592,22 @@ var ExtensionApp;
                  * Menu options
                  */
                 this.menuOptions = [
-                    ['Mark as Setup', function ($itemScope) {
+                    /*['Mark as Setup', function ($itemScope) {
+                        $itemScope.event.testtype = 'setup';
+                    }/*, [
+                        ['Mark as Setup and Edit', function($itemScope) {
                             $itemScope.event.testtype = 'setup';
-                        }, [
-                            ['Mark as Setup and Edit', function ($itemScope) {
-                                    $itemScope.event.testtype = 'setup';
-                                }]]], null,
+                        }]]
+                    ],null,*/
                     ['Mark as Step', function ($itemScope) {
                             $itemScope.event.testtype = 'step';
                         }], null,
                     ['Mark as Test', function ($itemScope) {
                             $itemScope.event.testtype = 'test';
-                        }], null,
-                    ['Mark as Result', function ($itemScope) {
-                            $itemScope.event.testtype = 'result';
-                        }]
+                        }] /*,null,
+                    ['Mark as Result', function($itemScope) {
+                        $itemScope.event.testtype = 'result';
+                    }]*/
                 ];
                 this.events = this.ChromeService.events;
             }
