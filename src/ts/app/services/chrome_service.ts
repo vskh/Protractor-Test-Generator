@@ -26,6 +26,9 @@ module ExtensionApp.Services
 		/** Dependency injection. */
 		static $inject = ['$rootScope', 'chrome'];
 
+		/** The chrome event listener function */
+		private EventListener: Function;
+
 		/**
 		 * Constructor for the chrome service.
 		 * @param $rootScope Scope
@@ -44,6 +47,7 @@ module ExtensionApp.Services
 			this.testingTabId = undefined;
 			this.isInitialized = false;
 			this.events = [];
+			this.chrome.runtime.onMessage.removeListener(this.EventListener);
 		}
 
 		/**
@@ -61,7 +65,7 @@ module ExtensionApp.Services
 		{
 			var CS = this;
 			var RS = this.$rootScope;
-			this.chrome.runtime.onMessage.addListener(function (msg, sender, response) {
+			this.EventListener = function (msg, sender, response) {
 
 				/** If the sender is content script and the tab is the one that we're tracking */
 				if (msg.from === 'content' && sender.tab.id === CS.testingTabId)
@@ -147,7 +151,8 @@ module ExtensionApp.Services
 					}
 				}
 				RS.$apply();
-			});
+			}
+			this.chrome.runtime.onMessage.addListener(this.EventListener);
 		}
 
 		/** Add event */
