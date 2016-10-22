@@ -324,11 +324,20 @@ var ExtensionApp;
             TemplateService.prototype.ComposeFile = function (testName) {
                 var fileTemplate = this.GetFileTemplate();
                 /** File template replacement tags */
+                var globalDefsPlaceholder = "%GLOBALDEFINITIONS%";
+                fileTemplate = fileTemplate.replace(globalDefsPlaceholder, this.ComposeGlobalDefinitions());
                 var testNameReplace = '%NAME%';
-                fileTemplate = fileTemplate.replace(testNameReplace, testName) + "%0A%09";
+                fileTemplate = fileTemplate.replace(testNameReplace, testName) + "\n";
                 var testTemplate = '%TESTTEMPLATE%';
-                fileTemplate = fileTemplate.replace(testTemplate, this.ComposeTests()) + "%0A%09";
+                fileTemplate = fileTemplate.replace(testTemplate, this.ComposeTestsSettings() + this.ComposeTests()) + "%0A%09";
                 return fileTemplate;
+            };
+            TemplateService.prototype.ComposeGlobalDefinitions = function () {
+                return "";
+            };
+            TemplateService.prototype.ComposeTestsSettings = function () {
+                return "browser.timeouts('implicit', 2000);\n" +
+                    "browser.timeouts('page load', 5000);\n";
             };
             /** Compose the tests */
             TemplateService.prototype.ComposeTests = function () {
@@ -345,7 +354,7 @@ var ExtensionApp;
                 var tests = "";
                 var currentIndent = 1;
                 this.ChromeService.events.forEach(function (value, index) {
-                    tests += "%09%09";
+                    tests += "\t\t";
                     /*if (currentIndent != value.indent)
                      {
     
@@ -434,6 +443,18 @@ var ExtensionApp;
             function ProtractorTemplateService() {
                 _super.apply(this, arguments);
             }
+            ProtractorTemplateService.prototype.ComposeGlobalDefinitions = function () {
+                return "var urlChanged = function(url) {" +
+                    "   return function () {" +
+                    "     return browser.getCurrentUrl().then(function(actualUrl) {" +
+                    "      return url != actualUrl;" +
+                    "     });" +
+                    "   };" +
+                    "};";
+            };
+            ProtractorTemplateService.prototype.ComposeTestsSettings = function () {
+                return "browser.ignoreSynchronization = true;\n";
+            };
             /** Browser get step */
             ProtractorTemplateService.prototype.AddBrowserGetStep = function (url) {
                 /** Get url template */
@@ -488,6 +509,79 @@ var ExtensionApp;
             return ProtractorTemplateService;
         }(TemplateService));
         Services.ProtractorTemplateService = ProtractorTemplateService;
+        var WebdriverIOTemplateService = (function (_super) {
+            __extends(WebdriverIOTemplateService, _super);
+            function WebdriverIOTemplateService() {
+                _super.apply(this, arguments);
+            }
+            WebdriverIOTemplateService.prototype.ComposeGlobalDefinitions = function () {
+                return "var urlChanged = function(url) {\n" +
+                    "   return browser.url() === url;\n" +
+                    "};\n";
+            };
+            WebdriverIOTemplateService.prototype.AddBrowserGetStep = function (url) {
+                return this.formatString("browser.url('{0}');\n", url);
+            };
+            WebdriverIOTemplateService.prototype.AddClickStep = function (id, path) {
+                if (id && id.length > 0) {
+                    return this.formatString("browser.click('#{0}');\n", id);
+                }
+                else if (path && path.length > 0) {
+                    return this.formatString("browser.click('{0}');\n", path);
+                }
+                else {
+                    return "\/\/ AddClickStep failed due to the missing element selector;\n";
+                }
+            };
+            WebdriverIOTemplateService.prototype.AddEnterStep = function (id) {
+                if (id && id.length > 0) {
+                    return this.formatString("browser.element('#{0}').keys('Enter');\n", id);
+                }
+                else {
+                    return "\/\/ AddEnterStep failed due to the missing element selector;\n";
+                }
+            };
+            WebdriverIOTemplateService.prototype.AddTypeInStep = function (id, path, text) {
+                if (id && id.length > 0) {
+                    return this.formatString("browser.setValue('#{0}', '{1}');\n", id, text);
+                }
+                else if (path && path.length > 0) {
+                    return this.formatString("browser.element('{0}', '{1}');\n", path, text);
+                }
+                else {
+                    return "\/\/ AddTypeInStep failed due to the missing element selector;\n";
+                }
+            };
+            WebdriverIOTemplateService.prototype.AddEnsureTest = function (id, path) {
+                if (id && id.length > 0) {
+                    return this.formatString("expect(browser.isExisting('#{0}')).toBeTruthy();\n", id);
+                }
+                else if (path && path.length > 0) {
+                    return this.formatString("expect(browser.isExisting('{0}')).toBeTruthy();\n", path);
+                }
+                else {
+                    return "\/\/ AddEnsureTest failed due to the missing element selector;\n";
+                }
+            };
+            /** Switch to iframe context */
+            WebdriverIOTemplateService.prototype.SwitchToIFrameContext = function (id) {
+                if (id && id.length > 0) {
+                    var result = "browser.waitForExist('#{0}', 2000);\n";
+                    result += "\t\t" + this.AddEnsureTest(id, undefined);
+                    result += "\t\t" + "browser.frame('#{0}');\n";
+                    return this.formatString(result, id);
+                }
+                else {
+                    return "\/\/ SwitchToIFrameContext failed due to the missing element selector;\n";
+                }
+            };
+            /** Add url change test */
+            WebdriverIOTemplateService.prototype.AddUrlChangeTest = function (url) {
+                return this.formatString("browser.waitUntil(urlChanged('{0}'), 5000)", url);
+            };
+            return WebdriverIOTemplateService;
+        }(TemplateService));
+        Services.WebdriverIOTemplateService = WebdriverIOTemplateService;
     })(Services = ExtensionApp.Services || (ExtensionApp.Services = {}));
 })(ExtensionApp || (ExtensionApp = {}));
 /// <reference path="chrome_service.ts"/>
@@ -496,9 +590,11 @@ var ExtensionApp;
 (function (ExtensionApp) {
     var Services;
     (function (Services) {
-        angular.module('ExtensionApp.Services', []);
-        angular.module('ExtensionApp.Services').service('ChromeService', Services.ChromeService);
-        angular.module('ExtensionApp.Services').service('ProtractorTemplateService', Services.ProtractorTemplateService);
+        angular
+            .module('ExtensionApp.Services', [])
+            .service('ChromeService', Services.ChromeService)
+            .service('ProtractorTemplateService', Services.ProtractorTemplateService)
+            .service('WebdriverIOTemplateService', Services.WebdriverIOTemplateService);
     })(Services = ExtensionApp.Services || (ExtensionApp.Services = {}));
 })(ExtensionApp || (ExtensionApp = {}));
 var ExtensionApp;
@@ -578,7 +674,7 @@ var ExtensionApp;
             /**
              * Dependency injection.
              */
-            IntroController.$inject = ['$scope', 'ChromeService', 'ProtractorTemplateService', 'chrome'];
+            IntroController.$inject = ['$scope', 'ChromeService', 'WebdriverIOTemplateService', 'chrome'];
             return IntroController;
         }());
         Controllers.IntroController = IntroController;
@@ -664,7 +760,7 @@ var ExtensionApp;
                 };
             }
             /** dependency injection */
-            NavbarController.$inject = ['$scope', '$location', 'ProtractorTemplateService'];
+            NavbarController.$inject = ['$scope', '$location', 'WebdriverIOTemplateService'];
             return NavbarController;
         }());
         Controllers.NavbarController = NavbarController;
@@ -686,7 +782,7 @@ var ExtensionApp;
                 };
             }
             /** Dependency injection */
-            PreferencesController.$inject = ['$scope', 'ProtractorTemplateService'];
+            PreferencesController.$inject = ['$scope', 'WebdriverIOTemplateService'];
             return PreferencesController;
         }());
         Controllers.PreferencesController = PreferencesController;

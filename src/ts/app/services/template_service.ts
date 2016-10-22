@@ -29,13 +29,25 @@ module ExtensionApp.Services {
             var fileTemplate = this.GetFileTemplate();
 
             /** File template replacement tags */
+            var globalDefsPlaceholder: string = "%GLOBALDEFINITIONS%";
+            fileTemplate = fileTemplate.replace(globalDefsPlaceholder, this.ComposeGlobalDefinitions());
+
             var testNameReplace: string = '%NAME%';
-            fileTemplate = fileTemplate.replace(testNameReplace, testName) + "%0A%09";
+            fileTemplate = fileTemplate.replace(testNameReplace, testName) + "\n";
 
             var testTemplate: string = '%TESTTEMPLATE%';
-            fileTemplate = fileTemplate.replace(testTemplate, this.ComposeTests()) + "%0A%09";
+            fileTemplate = fileTemplate.replace(testTemplate, this.ComposeTestsSettings() + this.ComposeTests()) + "%0A%09";
 
             return fileTemplate;
+        }
+
+        protected ComposeGlobalDefinitions(): string {
+            return "";
+        }
+
+        protected ComposeTestsSettings(): string {
+            return  `browser.timeouts('implicit', 2000);\n` +
+                    `browser.timeouts('page load', 5000);\n`;
         }
 
         /** Compose the tests */
@@ -55,7 +67,7 @@ module ExtensionApp.Services {
             var tests: string = "";
             var currentIndent = 1;
             this.ChromeService.events.forEach((value: any, index: number) => {
-                tests += "%09%09";
+                tests += "\t\t";
                 /*if (currentIndent != value.indent)
                  {
 
@@ -159,6 +171,20 @@ module ExtensionApp.Services {
 
     export class ProtractorTemplateService extends TemplateService {
 
+        protected ComposeGlobalDefinitions(): string {
+            return `var urlChanged = function(url) {` +
+                   `   return function () {` +
+                   `     return browser.getCurrentUrl().then(function(actualUrl) {` +
+                   `      return url != actualUrl;` +
+                   `     });` +
+                   `   };` +
+                   `};`;
+        }
+
+        protected ComposeTestsSettings(): string {
+            return "browser.ignoreSynchronization = true;\n";
+        }
+
         /** Browser get step */
         protected AddBrowserGetStep(url: string): string {
             /** Get url template */
@@ -215,6 +241,81 @@ module ExtensionApp.Services {
         /** Add url change test */
         protected AddUrlChangeTest(url: string): string {
             return this.formatString("browser.wait(urlChanged('{0}'), 5000)", url);
+        }
+    }
+
+    export class WebdriverIOTemplateService extends TemplateService {
+        protected ComposeGlobalDefinitions(): string {
+            return  `var urlChanged = function(url) {\n` +
+                    `   return browser.url() === url;\n` +
+                    `};\n`;
+        }
+
+        protected AddBrowserGetStep(url: string): string {
+            return this.formatString("browser.url('{0}');\n", url);
+        }
+
+        protected AddClickStep(id: string, path: string): string {
+            if (id && id.length > 0) {
+                return this.formatString("browser.click('#{0}');\n", id);
+            }
+            else if (path && path.length > 0) {
+                return this.formatString("browser.click('{0}');\n", path);
+            }
+            else {
+                return "\/\/ AddClickStep failed due to the missing element selector;\n";
+            }
+        }
+
+        protected AddEnterStep(id: string): string {
+            if (id && id.length > 0) {
+                return this.formatString("browser.element('#{0}').keys('Enter');\n", id);
+            }
+            else {
+                return "\/\/ AddEnterStep failed due to the missing element selector;\n";
+            }
+        }
+
+        protected AddTypeInStep(id: string, path: string, text: string): string {
+            if (id && id.length > 0) {
+                return this.formatString("browser.setValue('#{0}', '{1}');\n", id, text);
+            }
+            else if (path && path.length > 0) {
+                return this.formatString("browser.element('{0}', '{1}');\n", path, text);
+            }
+            else {
+                return "\/\/ AddTypeInStep failed due to the missing element selector;\n";
+            }
+        }
+
+        protected AddEnsureTest(id: string, path: string): string {
+            if (id && id.length > 0) {
+                return this.formatString("expect(browser.isExisting('#{0}')).toBeTruthy();\n", id);
+            }
+            else if (path && path.length > 0) {
+                return this.formatString("expect(browser.isExisting('{0}')).toBeTruthy();\n", path);
+            }
+            else {
+                return "\/\/ AddEnsureTest failed due to the missing element selector;\n";
+            }
+        }
+
+        /** Switch to iframe context */
+        protected SwitchToIFrameContext(id: string): string {
+            if (id && id.length > 0) {
+                let result = "browser.waitForExist('#{0}', 2000);\n";
+                result += "\t\t" + this.AddEnsureTest(id, undefined);
+                result += "\t\t" + "browser.frame('#{0}');\n";
+                return this.formatString(result, id);
+            }
+            else {
+                return "\/\/ SwitchToIFrameContext failed due to the missing element selector;\n";
+            }
+        }
+
+        /** Add url change test */
+        protected AddUrlChangeTest(url: string): string {
+            return this.formatString("browser.waitUntil(urlChanged('{0}'), 5000)", url);
         }
     }
 }

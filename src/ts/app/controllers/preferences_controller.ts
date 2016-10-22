@@ -17,7 +17,7 @@ module ExtensionApp.Controllers
 	export class PreferencesController
 	{
 		/** Dependency injection */
-		static $inject = ['$scope', 'ProtractorTemplateService'];
+		static $inject = ['$scope', 'WebdriverIOTemplateService'];
 
 		/** Preferences controller */
 		constructor($scope: IPreferencesScope, private TemplateService: Services.TemplateService)
