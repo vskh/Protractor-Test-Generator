@@ -13,7 +13,7 @@ module ExtensionApp.Controllers
 	export class NavbarController
 	{
 		/** dependency injection */
-		static $inject = ['$scope', '$location', 'WebdriverIOTemplateService'];
+		static $inject = ['$scope', '$location', 'ProtractorTemplateService'];
 
 		/**
 		 * Constructor for the controller

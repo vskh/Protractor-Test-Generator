@@ -447,13 +447,13 @@ var ExtensionApp;
             }
             ProtractorTemplateService.prototype.ComposeGlobalDefinitions = function () {
                 return [
-                    "var urlChanged = function (url) {" +
-                        "    return function () {" +
-                        "        return browser.getCurrentUrl().then(function (actualUrl) {" +
-                        "            return url != actualUrl;" +
-                        "        });" +
-                        "    };" +
-                        "};"
+                    "var urlChanged = function (url) {",
+                    "    return function () {",
+                    "        return browser.getCurrentUrl().then(function (actualUrl) {",
+                    "            return url != actualUrl;",
+                    "        });",
+                    "    };",
+                    "};"
                 ];
             };
             ProtractorTemplateService.prototype.ComposeTestsSettings = function () {
@@ -682,7 +682,7 @@ var ExtensionApp;
             /**
              * Dependency injection.
              */
-            IntroController.$inject = ['$scope', 'ChromeService', 'WebdriverIOTemplateService', 'chrome'];
+            IntroController.$inject = ['$scope', 'ChromeService', 'ProtractorTemplateService', 'chrome'];
             return IntroController;
         }());
         Controllers.IntroController = IntroController;
@@ -768,7 +768,7 @@ var ExtensionApp;
                 };
             }
             /** dependency injection */
-            NavbarController.$inject = ['$scope', '$location', 'WebdriverIOTemplateService'];
+            NavbarController.$inject = ['$scope', '$location', 'ProtractorTemplateService'];
             return NavbarController;
         }());
         Controllers.NavbarController = NavbarController;

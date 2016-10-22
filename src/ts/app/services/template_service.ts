@@ -177,12 +177,12 @@ module ExtensionApp.Services {
 
         protected ComposeGlobalDefinitions(): string[] {
             return [
-                `var urlChanged = function (url) {` +
-                `    return function () {` +
-                `        return browser.getCurrentUrl().then(function (actualUrl) {` +
-                `            return url != actualUrl;` +
-                `        });` +
-                `    };` +
+                `var urlChanged = function (url) {`,
+                `    return function () {`,
+                `        return browser.getCurrentUrl().then(function (actualUrl) {`,
+                `            return url != actualUrl;`,
+                `        });`,
+                `    };`,
                 `};`
             ];
         }
