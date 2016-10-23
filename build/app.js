@@ -7,6 +7,42 @@ var ExtensionApp;
 (function (ExtensionApp) {
     var Controllers;
     (function (Controllers) {
+        var NavbarController = (function () {
+            /**
+             * Constructor for the controller
+             */
+            function NavbarController($scope, $location, TemplateService, StorageService) {
+                var _this = this;
+                this.$scope = $scope;
+                this.$location = $location;
+                this.TemplateService = TemplateService;
+                this.StorageService = StorageService;
+                $scope.isActive = function (viewLocation) {
+                    if ($location.path().indexOf('demo') >= 0) {
+                        return false;
+                    }
+                    return $location.path().indexOf(viewLocation) >= 0;
+                };
+                $scope.Back = function () {
+                    window.history.back();
+                };
+                $scope.Download = function () {
+                    var testId = 'Recorded test';
+                    var fileData = _this.TemplateService.ComposeFile(testId);
+                    _this.StorageService.StoreFile(testId + '.js', fileData);
+                };
+            }
+            /** dependency injection */
+            NavbarController.$inject = ['$scope', '$location', 'ProtractorTemplateService', 'DownloadStorageService'];
+            return NavbarController;
+        }());
+        Controllers.NavbarController = NavbarController;
+    })(Controllers = ExtensionApp.Controllers || (ExtensionApp.Controllers = {}));
+})(ExtensionApp || (ExtensionApp = {}));
+var ExtensionApp;
+(function (ExtensionApp) {
+    var Controllers;
+    (function (Controllers) {
         /** Event types */
         (function (EventType) {
             EventType[EventType["Load"] = 0] = "Load";
@@ -390,22 +426,6 @@ var ExtensionApp;
                 });
                 return tests;
             };
-            /** Download file */
-            TemplateService.prototype.DownloadFile = function (testName) {
-                var fileData = this.ComposeFile(testName);
-                var fileBlob = new Blob([fileData], { type: "text/plain" });
-                var fileUrl = URL.createObjectURL(fileBlob);
-                chrome.downloads.download({
-                    url: fileUrl,
-                    // Provide initial name to be tests.js
-                    filename: 'tests.js',
-                    conflictAction: "prompt",
-                    // Open save as dialog
-                    saveAs: true
-                }, function (downloadId) {
-                    console.log("Downloaded item with ID", downloadId);
-                });
-            };
             /** Format string */
             TemplateService.prototype.formatString = function (format) {
                 var params = [];
@@ -592,8 +612,40 @@ var ExtensionApp;
         Services.WebdriverIOTemplateService = WebdriverIOTemplateService;
     })(Services = ExtensionApp.Services || (ExtensionApp.Services = {}));
 })(ExtensionApp || (ExtensionApp = {}));
+var ExtensionApp;
+(function (ExtensionApp) {
+    var Services;
+    (function (Services) {
+        /** StorageService that downloads file to user machine */
+        var DownloadStorageService = (function () {
+            function DownloadStorageService(chrome) {
+                this.chrome = chrome;
+            }
+            DownloadStorageService.prototype.StoreFile = function (fileName, fileData, fileType) {
+                if (fileType === void 0) { fileType = "text/plain"; }
+                var fileBlob = new Blob([fileData], { type: fileType });
+                var fileUrl = URL.createObjectURL(fileBlob);
+                this.chrome.downloads.download({
+                    url: fileUrl,
+                    // Provide initial name to be tests.js
+                    filename: fileName,
+                    conflictAction: "prompt",
+                    // Open save as dialog
+                    saveAs: true
+                }, function (downloadId) {
+                    console.log("Downloaded item with ID", downloadId);
+                });
+            };
+            /** Dependency injection */
+            DownloadStorageService.$inject = ['chrome'];
+            return DownloadStorageService;
+        }());
+        Services.DownloadStorageService = DownloadStorageService;
+    })(Services = ExtensionApp.Services || (ExtensionApp.Services = {}));
+})(ExtensionApp || (ExtensionApp = {}));
 /// <reference path="chrome_service.ts"/>
 /// <reference path="template_service.ts"/>
+/// <reference path="storage_service.ts"/>
 var ExtensionApp;
 (function (ExtensionApp) {
     var Services;
@@ -602,7 +654,8 @@ var ExtensionApp;
             .module('ExtensionApp.Services', [])
             .service('ChromeService', Services.ChromeService)
             .service('ProtractorTemplateService', Services.ProtractorTemplateService)
-            .service('WebdriverIOTemplateService', Services.WebdriverIOTemplateService);
+            .service('WebdriverIOTemplateService', Services.WebdriverIOTemplateService)
+            .service('DownloadStorageService', Services.DownloadStorageService);
     })(Services = ExtensionApp.Services || (ExtensionApp.Services = {}));
 })(ExtensionApp || (ExtensionApp = {}));
 var ExtensionApp;
@@ -615,10 +668,11 @@ var ExtensionApp;
              * @param $scope the scope
              * @param ChromeService chrome service
              */
-            function IntroController($scope, ChromeService, TemplateService, chrome) {
+            function IntroController($scope, ChromeService, TemplateService, StorageService, chrome) {
                 this.$scope = $scope;
                 this.ChromeService = ChromeService;
                 this.TemplateService = TemplateService;
+                this.StorageService = StorageService;
                 this.chrome = chrome;
                 /** If the chrome service is not initialized present the base page request experience. */
                 if (!ChromeService.isInitialized) {
@@ -677,12 +731,14 @@ var ExtensionApp;
             };
             /** Download the tests */
             IntroController.prototype.Download = function () {
-                this.TemplateService.DownloadFile('Recorded Tests');
+                var testId = 'Recorded test';
+                var fileData = this.TemplateService.ComposeFile(testId);
+                this.StorageService.StoreFile(testId + '.js', fileData);
             };
             /**
              * Dependency injection.
              */
-            IntroController.$inject = ['$scope', 'ChromeService', 'ProtractorTemplateService', 'chrome'];
+            IntroController.$inject = ['$scope', 'ChromeService', 'ProtractorTemplateService', 'DownloadStorageService', 'chrome'];
             return IntroController;
         }());
         Controllers.IntroController = IntroController;
@@ -739,39 +795,6 @@ var ExtensionApp;
             return EventsController;
         }());
         Controllers.EventsController = EventsController;
-    })(Controllers = ExtensionApp.Controllers || (ExtensionApp.Controllers = {}));
-})(ExtensionApp || (ExtensionApp = {}));
-var ExtensionApp;
-(function (ExtensionApp) {
-    var Controllers;
-    (function (Controllers) {
-        var NavbarController = (function () {
-            /**
-             * Constructor for the controller
-             */
-            function NavbarController($scope, $location, TemplateService) {
-                var _this = this;
-                this.$scope = $scope;
-                this.$location = $location;
-                this.TemplateService = TemplateService;
-                $scope.isActive = function (viewLocation) {
-                    if ($location.path().indexOf('demo') >= 0) {
-                        return false;
-                    }
-                    return $location.path().indexOf(viewLocation) >= 0;
-                };
-                $scope.Back = function () {
-                    window.history.back();
-                };
-                $scope.Download = function () {
-                    _this.TemplateService.DownloadFile('Recorded Test');
-                };
-            }
-            /** dependency injection */
-            NavbarController.$inject = ['$scope', '$location', 'ProtractorTemplateService'];
-            return NavbarController;
-        }());
-        Controllers.NavbarController = NavbarController;
     })(Controllers = ExtensionApp.Controllers || (ExtensionApp.Controllers = {}));
 })(ExtensionApp || (ExtensionApp = {}));
 var ExtensionApp;

@@ -106,24 +106,6 @@ module ExtensionApp.Services {
             return tests;
         }
 
-        /** Download file */
-        public DownloadFile(testName: string) {
-            var fileData: string = this.ComposeFile(testName);
-            var fileBlob = new Blob([fileData], {type: "text/plain"});
-            var fileUrl = URL.createObjectURL(fileBlob);
-
-            chrome.downloads.download({
-                url: fileUrl,
-                // Provide initial name to be tests.js
-                filename: 'tests.js',
-                conflictAction: "prompt",
-                // Open save as dialog
-                saveAs: true,
-            }, function (downloadId) {
-                console.log("Downloaded item with ID", downloadId);
-            });
-        }
-
         /** Format string */
         protected formatString(format: string, ...params): string {
             var args = Array.prototype.slice.call(arguments, 1);
