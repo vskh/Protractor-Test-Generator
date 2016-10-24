@@ -5,160 +5,6 @@ var __extends = (this && this.__extends) || function (d, b) {
 };
 var ExtensionApp;
 (function (ExtensionApp) {
-    var Controllers;
-    (function (Controllers) {
-        var NavbarController = (function () {
-            /**
-             * Constructor for the controller
-             */
-            function NavbarController($scope, $location, TemplateService, StorageService) {
-                var _this = this;
-                this.$scope = $scope;
-                this.$location = $location;
-                this.TemplateService = TemplateService;
-                this.StorageService = StorageService;
-                $scope.isActive = function (viewLocation) {
-                    if ($location.path().indexOf('demo') >= 0) {
-                        return false;
-                    }
-                    return $location.path().indexOf(viewLocation) >= 0;
-                };
-                $scope.Back = function () {
-                    window.history.back();
-                };
-                $scope.Download = function () {
-                    var testId = 'Recorded test';
-                    var fileData = _this.TemplateService.ComposeFile(testId);
-                    _this.StorageService.StoreFile(testId + '.js', fileData);
-                };
-            }
-            /** dependency injection */
-            NavbarController.$inject = ['$scope', '$location', 'ProtractorTemplateService', 'DownloadStorageService'];
-            return NavbarController;
-        }());
-        Controllers.NavbarController = NavbarController;
-    })(Controllers = ExtensionApp.Controllers || (ExtensionApp.Controllers = {}));
-})(ExtensionApp || (ExtensionApp = {}));
-var ExtensionApp;
-(function (ExtensionApp) {
-    var Controllers;
-    (function (Controllers) {
-        /** Event types */
-        (function (EventType) {
-            EventType[EventType["Load"] = 0] = "Load";
-            EventType[EventType["Click"] = 1] = "Click";
-            EventType[EventType["Focus"] = 2] = "Focus";
-            EventType[EventType["Key"] = 3] = "Key";
-        })(Controllers.EventType || (Controllers.EventType = {}));
-        var EventType = Controllers.EventType;
-    })(Controllers = ExtensionApp.Controllers || (ExtensionApp.Controllers = {}));
-})(ExtensionApp || (ExtensionApp = {}));
-var ExtensionApp;
-(function (ExtensionApp) {
-    var Controllers;
-    (function (Controllers) {
-        /** Outcome type */
-        (function (OutcomeType) {
-            OutcomeType[OutcomeType["NetworkCall"] = 0] = "NetworkCall";
-            OutcomeType[OutcomeType["UXChange"] = 1] = "UXChange";
-            OutcomeType[OutcomeType["URLChange"] = 2] = "URLChange";
-        })(Controllers.OutcomeType || (Controllers.OutcomeType = {}));
-        var OutcomeType = Controllers.OutcomeType;
-    })(Controllers = ExtensionApp.Controllers || (ExtensionApp.Controllers = {}));
-})(ExtensionApp || (ExtensionApp = {}));
-var ExtensionApp;
-(function (ExtensionApp) {
-    var Controllers;
-    (function (Controllers) {
-        /** Abstract Event class */
-        var Event = (function () {
-            function Event() {
-            }
-            return Event;
-        }());
-        Controllers.Event = Event;
-    })(Controllers = ExtensionApp.Controllers || (ExtensionApp.Controllers = {}));
-})(ExtensionApp || (ExtensionApp = {}));
-var ExtensionApp;
-(function (ExtensionApp) {
-    var Controllers;
-    (function (Controllers) {
-        /** Base class for different outcome types. */
-        var Outcome = (function () {
-            function Outcome() {
-            }
-            return Outcome;
-        }());
-        Controllers.Outcome = Outcome;
-    })(Controllers = ExtensionApp.Controllers || (ExtensionApp.Controllers = {}));
-})(ExtensionApp || (ExtensionApp = {}));
-var ExtensionApp;
-(function (ExtensionApp) {
-    var Controllers;
-    (function (Controllers) {
-        /** Click event */
-        var ClickEvent = (function (_super) {
-            __extends(ClickEvent, _super);
-            /** Make sure the event class + id + perhaps the element number is logged */
-            function ClickEvent(elementId, elementClass) {
-                _super.call(this);
-                this.elementId = elementId;
-                this.elementClass = elementClass;
-                /** Click event type */
-                this.type = Controllers.EventType.Click;
-            }
-            return ClickEvent;
-        }(Controllers.Event));
-        Controllers.ClickEvent = ClickEvent;
-    })(Controllers = ExtensionApp.Controllers || (ExtensionApp.Controllers = {}));
-})(ExtensionApp || (ExtensionApp = {}));
-var ExtensionApp;
-(function (ExtensionApp) {
-    var Controllers;
-    (function (Controllers) {
-        /** Load event */
-        var LoadEvent = (function (_super) {
-            __extends(LoadEvent, _super);
-            /** Constructor */
-            function LoadEvent(loadUrl) {
-                _super.call(this);
-                this.loadUrl = loadUrl;
-                /** Type is load */
-                this.type = Controllers.EventType.Load;
-            }
-            return LoadEvent;
-        }(Controllers.Event));
-        Controllers.LoadEvent = LoadEvent;
-    })(Controllers = ExtensionApp.Controllers || (ExtensionApp.Controllers = {}));
-})(ExtensionApp || (ExtensionApp = {}));
-var ExtensionApp;
-(function (ExtensionApp) {
-    var Controllers;
-    (function (Controllers) {
-        /** Load event */
-        var KeyEvent = (function (_super) {
-            __extends(KeyEvent, _super);
-            /** Constructor */
-            function KeyEvent(loadUrl) {
-                _super.call(this);
-                this.loadUrl = loadUrl;
-                /** Type is load */
-                this.type = Controllers.EventType.Key;
-            }
-            return KeyEvent;
-        }(Controllers.Event));
-        Controllers.KeyEvent = KeyEvent;
-    })(Controllers = ExtensionApp.Controllers || (ExtensionApp.Controllers = {}));
-})(ExtensionApp || (ExtensionApp = {}));
-/// <reference path="EventType.ts"/>
-/// <reference path="OutcomeType.ts"/>
-/// <reference path="Event.ts"/>
-/// <reference path="Outcome.ts"/>
-/// <reference path="ClickEvent.ts"/>
-/// <reference path="LoadEvent.ts"/>
-/// <reference path="KeyEvent.ts"/> 
-var ExtensionApp;
-(function (ExtensionApp) {
     var Services;
     (function (Services) {
         /**
@@ -618,6 +464,10 @@ var ExtensionApp;
     (function (Services) {
         /** StorageService that downloads file to user machine */
         var DownloadStorageService = (function () {
+            /**
+             * Constructor
+             * @param chrome extension access
+             */
             function DownloadStorageService(chrome) {
                 this.chrome = chrome;
             }
@@ -641,6 +491,45 @@ var ExtensionApp;
             return DownloadStorageService;
         }());
         Services.DownloadStorageService = DownloadStorageService;
+        /**
+         * HTTPStorageService can store file to remote HTTP service.
+         *
+         * Endpoint should support POST method.
+         */
+        var HTTPStorageService = (function () {
+            /**
+             * Constructor
+             * @param endpointUrl URL of REST endpoint to store file to.
+             */
+            function HTTPStorageService(endpointUrl) {
+                if (endpointUrl === void 0) { endpointUrl = "http://localhost:8080"; }
+                this.endpointUrl = endpointUrl;
+            }
+            HTTPStorageService.prototype.StoreFile = function (fileName, fileData, fileType) {
+                if (fileType === void 0) { fileType = "text/plain"; }
+                var me = this;
+                var fileBlob = new Blob([fileData], { type: fileType });
+                var data = new FormData();
+                data.append("file", fileBlob, fileName);
+                var xhr = new XMLHttpRequest();
+                xhr.open("POST", me.endpointUrl);
+                xhr.onreadystatechange = function () {
+                    if (xhr.readyState === 4) {
+                        if (xhr.status >= 200 && xhr.status < 300) {
+                            console.log("File was successfully stored to '%s'", me.endpointUrl);
+                        }
+                        else {
+                            console.log("Request to '%s' failed with code %d", me.endpointUrl, xhr.status);
+                        }
+                    }
+                };
+                xhr.send(data);
+            };
+            /** Dependency injection */
+            HTTPStorageService.$inject = [];
+            return HTTPStorageService;
+        }());
+        Services.HTTPStorageService = HTTPStorageService;
     })(Services = ExtensionApp.Services || (ExtensionApp.Services = {}));
 })(ExtensionApp || (ExtensionApp = {}));
 /// <reference path="chrome_service.ts"/>
@@ -655,9 +544,128 @@ var ExtensionApp;
             .service('ChromeService', Services.ChromeService)
             .service('ProtractorTemplateService', Services.ProtractorTemplateService)
             .service('WebdriverIOTemplateService', Services.WebdriverIOTemplateService)
-            .service('DownloadStorageService', Services.DownloadStorageService);
+            .service('DownloadStorageService', Services.DownloadStorageService)
+            .service('HTTPStorageService', Services.HTTPStorageService);
     })(Services = ExtensionApp.Services || (ExtensionApp.Services = {}));
 })(ExtensionApp || (ExtensionApp = {}));
+var ExtensionApp;
+(function (ExtensionApp) {
+    var Controllers;
+    (function (Controllers) {
+        /** Event types */
+        (function (EventType) {
+            EventType[EventType["Load"] = 0] = "Load";
+            EventType[EventType["Click"] = 1] = "Click";
+            EventType[EventType["Focus"] = 2] = "Focus";
+            EventType[EventType["Key"] = 3] = "Key";
+        })(Controllers.EventType || (Controllers.EventType = {}));
+        var EventType = Controllers.EventType;
+    })(Controllers = ExtensionApp.Controllers || (ExtensionApp.Controllers = {}));
+})(ExtensionApp || (ExtensionApp = {}));
+var ExtensionApp;
+(function (ExtensionApp) {
+    var Controllers;
+    (function (Controllers) {
+        /** Outcome type */
+        (function (OutcomeType) {
+            OutcomeType[OutcomeType["NetworkCall"] = 0] = "NetworkCall";
+            OutcomeType[OutcomeType["UXChange"] = 1] = "UXChange";
+            OutcomeType[OutcomeType["URLChange"] = 2] = "URLChange";
+        })(Controllers.OutcomeType || (Controllers.OutcomeType = {}));
+        var OutcomeType = Controllers.OutcomeType;
+    })(Controllers = ExtensionApp.Controllers || (ExtensionApp.Controllers = {}));
+})(ExtensionApp || (ExtensionApp = {}));
+var ExtensionApp;
+(function (ExtensionApp) {
+    var Controllers;
+    (function (Controllers) {
+        /** Abstract Event class */
+        var Event = (function () {
+            function Event() {
+            }
+            return Event;
+        }());
+        Controllers.Event = Event;
+    })(Controllers = ExtensionApp.Controllers || (ExtensionApp.Controllers = {}));
+})(ExtensionApp || (ExtensionApp = {}));
+var ExtensionApp;
+(function (ExtensionApp) {
+    var Controllers;
+    (function (Controllers) {
+        /** Base class for different outcome types. */
+        var Outcome = (function () {
+            function Outcome() {
+            }
+            return Outcome;
+        }());
+        Controllers.Outcome = Outcome;
+    })(Controllers = ExtensionApp.Controllers || (ExtensionApp.Controllers = {}));
+})(ExtensionApp || (ExtensionApp = {}));
+var ExtensionApp;
+(function (ExtensionApp) {
+    var Controllers;
+    (function (Controllers) {
+        /** Click event */
+        var ClickEvent = (function (_super) {
+            __extends(ClickEvent, _super);
+            /** Make sure the event class + id + perhaps the element number is logged */
+            function ClickEvent(elementId, elementClass) {
+                _super.call(this);
+                this.elementId = elementId;
+                this.elementClass = elementClass;
+                /** Click event type */
+                this.type = Controllers.EventType.Click;
+            }
+            return ClickEvent;
+        }(Controllers.Event));
+        Controllers.ClickEvent = ClickEvent;
+    })(Controllers = ExtensionApp.Controllers || (ExtensionApp.Controllers = {}));
+})(ExtensionApp || (ExtensionApp = {}));
+var ExtensionApp;
+(function (ExtensionApp) {
+    var Controllers;
+    (function (Controllers) {
+        /** Load event */
+        var LoadEvent = (function (_super) {
+            __extends(LoadEvent, _super);
+            /** Constructor */
+            function LoadEvent(loadUrl) {
+                _super.call(this);
+                this.loadUrl = loadUrl;
+                /** Type is load */
+                this.type = Controllers.EventType.Load;
+            }
+            return LoadEvent;
+        }(Controllers.Event));
+        Controllers.LoadEvent = LoadEvent;
+    })(Controllers = ExtensionApp.Controllers || (ExtensionApp.Controllers = {}));
+})(ExtensionApp || (ExtensionApp = {}));
+var ExtensionApp;
+(function (ExtensionApp) {
+    var Controllers;
+    (function (Controllers) {
+        /** Load event */
+        var KeyEvent = (function (_super) {
+            __extends(KeyEvent, _super);
+            /** Constructor */
+            function KeyEvent(loadUrl) {
+                _super.call(this);
+                this.loadUrl = loadUrl;
+                /** Type is load */
+                this.type = Controllers.EventType.Key;
+            }
+            return KeyEvent;
+        }(Controllers.Event));
+        Controllers.KeyEvent = KeyEvent;
+    })(Controllers = ExtensionApp.Controllers || (ExtensionApp.Controllers = {}));
+})(ExtensionApp || (ExtensionApp = {}));
+/// <reference path="EventType.ts"/>
+/// <reference path="OutcomeType.ts"/>
+/// <reference path="Event.ts"/>
+/// <reference path="Outcome.ts"/>
+/// <reference path="ClickEvent.ts"/>
+/// <reference path="LoadEvent.ts"/>
+/// <reference path="KeyEvent.ts"/> 
 var ExtensionApp;
 (function (ExtensionApp) {
     var Controllers;
@@ -795,6 +803,42 @@ var ExtensionApp;
             return EventsController;
         }());
         Controllers.EventsController = EventsController;
+    })(Controllers = ExtensionApp.Controllers || (ExtensionApp.Controllers = {}));
+})(ExtensionApp || (ExtensionApp = {}));
+var ExtensionApp;
+(function (ExtensionApp) {
+    var Controllers;
+    (function (Controllers) {
+        var NavbarController = (function () {
+            /**
+             * Constructor for the controller
+             */
+            function NavbarController($scope, $location, TemplateService, StorageService) {
+                var _this = this;
+                this.$scope = $scope;
+                this.$location = $location;
+                this.TemplateService = TemplateService;
+                this.StorageService = StorageService;
+                $scope.isActive = function (viewLocation) {
+                    if ($location.path().indexOf('demo') >= 0) {
+                        return false;
+                    }
+                    return $location.path().indexOf(viewLocation) >= 0;
+                };
+                $scope.Back = function () {
+                    window.history.back();
+                };
+                $scope.Download = function () {
+                    var testId = 'Recorded test';
+                    var fileData = _this.TemplateService.ComposeFile(testId);
+                    _this.StorageService.StoreFile(testId + '.js', fileData);
+                };
+            }
+            /** dependency injection */
+            NavbarController.$inject = ['$scope', '$location', 'ProtractorTemplateService', 'DownloadStorageService'];
+            return NavbarController;
+        }());
+        Controllers.NavbarController = NavbarController;
     })(Controllers = ExtensionApp.Controllers || (ExtensionApp.Controllers = {}));
 })(ExtensionApp || (ExtensionApp = {}));
 var ExtensionApp;

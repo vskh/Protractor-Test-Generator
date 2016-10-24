@@ -7,5 +7,6 @@ module ExtensionApp.Services {
         .service('ChromeService', ChromeService)
         .service('ProtractorTemplateService', ProtractorTemplateService)
         .service('WebdriverIOTemplateService', WebdriverIOTemplateService)
-        .service('DownloadStorageService', DownloadStorageService);
+        .service('DownloadStorageService', DownloadStorageService)
+        .service('HTTPStorageService', HTTPStorageService);
 }

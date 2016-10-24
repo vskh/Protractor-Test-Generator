@@ -9,7 +9,7 @@ module ExtensionApp.Services {
          * @param chrome extension access
          * @param ChromeService chrome service
          */
-        constructor(private chrome: any, private ChromeService: ChromeService) {
+        constructor(private chrome: any, private ChromeService: Services.ChromeService) {
         }
 
         /** Get file template */
