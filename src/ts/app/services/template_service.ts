@@ -9,7 +9,7 @@ module ExtensionApp.Services {
          * @param chrome extension access
          * @param ChromeService chrome service
          */
-        constructor(private chrome: any, private ChromeService: ChromeService) {
+        constructor(private chrome: any, private ChromeService: Services.ChromeService) {
         }
 
         /** Get file template */
@@ -104,24 +104,6 @@ module ExtensionApp.Services {
             });
 
             return tests;
-        }
-
-        /** Download file */
-        public DownloadFile(testName: string) {
-            var fileData: string = this.ComposeFile(testName);
-            var fileBlob = new Blob([fileData], {type: "text/plain"});
-            var fileUrl = URL.createObjectURL(fileBlob);
-
-            chrome.downloads.download({
-                url: fileUrl,
-                // Provide initial name to be tests.js
-                filename: 'tests.js',
-                conflictAction: "prompt",
-                // Open save as dialog
-                saveAs: true,
-            }, function (downloadId) {
-                console.log("Downloaded item with ID", downloadId);
-            });
         }
 
         /** Format string */
